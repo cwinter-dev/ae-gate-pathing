@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AEBestGatePath", "AEBestGatePath\AEBestGatePath.csproj", "{5B846F82-D5B4-40D6-98A2-D6B557E68895}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AEBestGatePath.Test", "AEBestGatePath.Test\AEBestGatePath.Test.csproj", "{E29D31F3-DE2A-4BD4-A082-3B7900B33BE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{5B846F82-D5B4-40D6-98A2-D6B557E68895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B846F82-D5B4-40D6-98A2-D6B557E68895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B846F82-D5B4-40D6-98A2-D6B557E68895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29D31F3-DE2A-4BD4-A082-3B7900B33BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29D31F3-DE2A-4BD4-A082-3B7900B33BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29D31F3-DE2A-4BD4-A082-3B7900B33BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29D31F3-DE2A-4BD4-A082-3B7900B33BE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
