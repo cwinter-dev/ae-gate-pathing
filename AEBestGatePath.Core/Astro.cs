@@ -1,11 +1,13 @@
 ﻿using System.Text.RegularExpressions;
 
-public partial struct Astro
+namespace AEBestGatePath.Core;
+
+public readonly partial record struct Astro
 {
-    private readonly Regex _regex = LocationRegex();
+    private static readonly Regex LocationParser = LocationRegex();
     public Astro(string loc, int gateLevel = 0, int logiCommander = 0)
     {
-        var m = _regex.Match(loc);
+        var m = LocationParser.Match(loc);
         if (!m.Success) throw new ArgumentException("Unable to parse location: " + loc);
         Server = m.Groups[1].Value[0];
         if (int.TryParse(m.Groups[2].Value, out var cluster))
@@ -27,6 +29,22 @@ public partial struct Astro
         GateLevel = gateLevel;
         LogiCommander = logiCommander;
     }
+
+    public Astro(char server, int cluster, int galaxy, int regionX, int regionY, int systemX, int systemY, int ring, int ringPosition, int gateLevel, int logiCommander)
+    {
+        Server = server;
+        Cluster = cluster;
+        Galaxy = galaxy;
+        RegionX = regionX;
+        RegionY = regionY;
+        SystemX = systemX;
+        SystemY = systemY;
+        Ring = ring;
+        RingPosition = ringPosition;
+        GateLevel = gateLevel;
+        LogiCommander = logiCommander;
+    }
+
     public char Server { get; }
     public int Cluster { get; }
     public int Galaxy { get; }
@@ -47,12 +65,7 @@ public partial struct Astro
         return $"{Server}{Cluster}{Galaxy}:{RegionX}{RegionY}:{SystemX}{SystemY}:{Ring}{RingPosition} - {GateLevel}:{LogiCommander}";
     }
 
-    public override bool Equals(object? obj)
-    {
-        return ReferenceEquals(this, obj) || obj is Astro other && Equals(other);
-    }
-
-    private bool Equals(Astro other)
+    public bool Equals(Astro other)
     {
         return Server == other.Server && Cluster == other.Cluster && Galaxy == other.Galaxy && RegionX == other.RegionX && RegionY == other.RegionY && SystemX == other.SystemX && SystemY == other.SystemY && Ring == other.Ring && RingPosition == other.RingPosition && GateLevel == other.GateLevel && LogiCommander == other.LogiCommander;
     }

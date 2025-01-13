@@ -1,4 +1,4 @@
-﻿namespace AEBestGatePath;
+﻿namespace AEBestGatePath.Core;
 
 public class Journey
 {

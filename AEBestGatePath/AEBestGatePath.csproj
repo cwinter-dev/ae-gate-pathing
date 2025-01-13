@@ -7,4 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AEBestGatePath.Core\AEBestGatePath.Core.csproj" />
+      <ProjectReference Include="..\AEBestGatePath.Data\AEBestGatePath.Data.csproj" />
+    </ItemGroup>
+
 </Project>
