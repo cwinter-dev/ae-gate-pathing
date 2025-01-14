@@ -9,23 +9,15 @@ namespace AEBestGatePath.Web.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Gate : IAdditionalDataHolder, IParsable
+    public partial class Guild2 : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The gameId property</summary>
+        public int? GameId { get; set; }
         /// <summary>The id property</summary>
         public Guid? Id { get; set; }
-        /// <summary>The lastUpdated property</summary>
-        public DateTimeOffset? LastUpdated { get; set; }
-        /// <summary>The location property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Location? Location { get; set; }
-#nullable restore
-#else
-        public global::AEBestGatePath.Web.Client.Models.Location Location { get; set; }
-#endif
         /// <summary>The name property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -34,34 +26,30 @@ namespace AEBestGatePath.Web.Client.Models
 #else
         public string Name { get; set; }
 #endif
-        /// <summary>The occupied property</summary>
-        public bool? Occupied { get; set; }
-        /// <summary>The player property</summary>
+        /// <summary>The players property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Player? Player { get; set; }
+        public List<global::AEBestGatePath.Web.Client.Models.Gate>? Players { get; set; }
 #nullable restore
 #else
-        public global::AEBestGatePath.Web.Client.Models.Player Player { get; set; }
+        public List<global::AEBestGatePath.Web.Client.Models.Gate> Players { get; set; }
 #endif
-        /// <summary>The playerId property</summary>
-        public Guid? PlayerId { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Models.Gate"/> and sets the default values.
+        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Models.Guild2"/> and sets the default values.
         /// </summary>
-        public Gate()
+        public Guild2()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Models.Gate"/></returns>
+        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Models.Guild2"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::AEBestGatePath.Web.Client.Models.Gate CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::AEBestGatePath.Web.Client.Models.Guild2 CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::AEBestGatePath.Web.Client.Models.Gate();
+            return new global::AEBestGatePath.Web.Client.Models.Guild2();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -71,13 +59,10 @@ namespace AEBestGatePath.Web.Client.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "gameId", n => { GameId = n.GetIntValue(); } },
                 { "id", n => { Id = n.GetGuidValue(); } },
-                { "lastUpdated", n => { LastUpdated = n.GetDateTimeOffsetValue(); } },
-                { "location", n => { Location = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Location>(global::AEBestGatePath.Web.Client.Models.Location.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "occupied", n => { Occupied = n.GetBoolValue(); } },
-                { "player", n => { Player = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Player>(global::AEBestGatePath.Web.Client.Models.Player.CreateFromDiscriminatorValue); } },
-                { "playerId", n => { PlayerId = n.GetGuidValue(); } },
+                { "players", n => { Players = n.GetCollectionOfObjectValues<global::AEBestGatePath.Web.Client.Models.Gate>(global::AEBestGatePath.Web.Client.Models.Gate.CreateFromDiscriminatorValue)?.AsList(); } },
             };
         }
         /// <summary>
@@ -87,13 +72,10 @@ namespace AEBestGatePath.Web.Client.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
+            writer.WriteIntValue("gameId", GameId);
             writer.WriteGuidValue("id", Id);
-            writer.WriteDateTimeOffsetValue("lastUpdated", LastUpdated);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Location>("location", Location);
             writer.WriteStringValue("name", Name);
-            writer.WriteBoolValue("occupied", Occupied);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Player>("player", Player);
-            writer.WriteGuidValue("playerId", PlayerId);
+            writer.WriteCollectionOfObjectValues<global::AEBestGatePath.Web.Client.Models.Gate>("players", Players);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

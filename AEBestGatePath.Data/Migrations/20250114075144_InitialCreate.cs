@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AEBestGatePath.Data.Migrations
 {
     /// <inheritdoc />
@@ -16,8 +18,7 @@ namespace AEBestGatePath.Data.Migrations
                 name: "Guilds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -27,12 +28,24 @@ namespace AEBestGatePath.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Players",
+                name: "SeedData",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GuildId = table.Column<int>(type: "integer", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SeedData", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Players",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    GuildId = table.Column<Guid>(type: "uuid", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: false),
                     GameId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -50,13 +63,12 @@ namespace AEBestGatePath.Data.Migrations
                 name: "Gates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    PlayerId = table.Column<Guid>(type: "uuid", nullable: false),
                     Occupied = table.Column<bool>(type: "boolean", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GuildId = table.Column<int>(type: "integer", nullable: true),
-                    PlayerId = table.Column<int>(type: "integer", nullable: true),
+                    GuildId = table.Column<Guid>(type: "uuid", nullable: true),
                     Location_Cluster = table.Column<int>(type: "integer", nullable: false),
                     Location_Galaxy = table.Column<int>(type: "integer", nullable: false),
                     Location_GateLevel = table.Column<int>(type: "integer", nullable: false),
@@ -81,7 +93,17 @@ namespace AEBestGatePath.Data.Migrations
                         name: "FK_Gates_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Guilds",
+                columns: new[] { "Id", "GameId", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("17f9eba5-63bf-4ad0-9415-70b6e482fd7a"), 6469, "CRUEL" },
+                    { new Guid("b70b6921-9ee7-4cba-914f-c4bc619dc4b2"), 12530, "actually four guilds" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -95,9 +117,27 @@ namespace AEBestGatePath.Data.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Guilds_Name",
+                table: "Guilds",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Players_GuildId",
                 table: "Players",
                 column: "GuildId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_Name",
+                table: "Players",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SeedData_Name",
+                table: "SeedData",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -105,6 +145,9 @@ namespace AEBestGatePath.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Gates");
+
+            migrationBuilder.DropTable(
+                name: "SeedData");
 
             migrationBuilder.DropTable(
                 name: "Players");

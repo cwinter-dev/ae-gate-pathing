@@ -9,28 +9,28 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-namespace AEBestGatePath.Web.Client.Gates.Item
+namespace AEBestGatePath.Web.Client.Guilds.Item
 {
     /// <summary>
-    /// Builds and executes requests for operations under \gates\{id}
+    /// Builds and executes requests for operations under \guilds\{id}
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class GatesItemRequestBuilder : BaseRequestBuilder
+    public partial class GuildsItemRequestBuilder : BaseRequestBuilder
     {
         /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Gates.Item.GatesItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Guilds.Item.GuildsItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public GatesItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/gates/{id}", pathParameters)
+        public GuildsItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/guilds/{id}", pathParameters)
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Gates.Item.GatesItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Guilds.Item.GuildsItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public GatesItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/gates/{id}", rawUrl)
+        public GuildsItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/guilds/{id}", rawUrl)
         {
         }
         /// <returns>A <see cref="Stream"/></returns>
@@ -69,11 +69,11 @@ namespace AEBestGatePath.Web.Client.Gates.Item
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<Stream?> PutAsync(global::AEBestGatePath.Web.Client.Models.Gate2 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<Stream?> PutAsync(global::AEBestGatePath.Web.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<Stream> PutAsync(global::AEBestGatePath.Web.Client.Models.Gate2 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<Stream> PutAsync(global::AEBestGatePath.Web.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
@@ -115,11 +115,11 @@ namespace AEBestGatePath.Web.Client.Gates.Item
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public RequestInformation ToPutRequestInformation(global::AEBestGatePath.Web.Client.Models.Gate2 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        public RequestInformation ToPutRequestInformation(global::AEBestGatePath.Web.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
         {
 #nullable restore
 #else
-        public RequestInformation ToPutRequestInformation(global::AEBestGatePath.Web.Client.Models.Gate2 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        public RequestInformation ToPutRequestInformation(global::AEBestGatePath.Web.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
@@ -131,26 +131,18 @@ namespace AEBestGatePath.Web.Client.Gates.Item
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Gates.Item.GatesItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Guilds.Item.GuildsItemRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
-        public global::AEBestGatePath.Web.Client.Gates.Item.GatesItemRequestBuilder WithUrl(string rawUrl)
+        public global::AEBestGatePath.Web.Client.Guilds.Item.GuildsItemRequestBuilder WithUrl(string rawUrl)
         {
-            return new global::AEBestGatePath.Web.Client.Gates.Item.GatesItemRequestBuilder(rawUrl, RequestAdapter);
+            return new global::AEBestGatePath.Web.Client.Guilds.Item.GuildsItemRequestBuilder(rawUrl, RequestAdapter);
         }
         /// <summary>
         /// Configuration for the request such as headers, query parameters, and middleware options.
         /// </summary>
         [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class GatesItemRequestBuilderDeleteRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
-        {
-        }
-        /// <summary>
-        /// Configuration for the request such as headers, query parameters, and middleware options.
-        /// </summary>
-        [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class GatesItemRequestBuilderGetRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
+        public partial class GuildsItemRequestBuilderDeleteRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
         {
         }
         /// <summary>
@@ -158,7 +150,15 @@ namespace AEBestGatePath.Web.Client.Gates.Item
         /// </summary>
         [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class GatesItemRequestBuilderPutRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
+        public partial class GuildsItemRequestBuilderGetRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
+        {
+        }
+        /// <summary>
+        /// Configuration for the request such as headers, query parameters, and middleware options.
+        /// </summary>
+        [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
+        public partial class GuildsItemRequestBuilderPutRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
         {
         }
     }

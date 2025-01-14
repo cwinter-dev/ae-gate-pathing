@@ -22,7 +22,7 @@ namespace AEBestGatePath.Web.Client.Route.Item.Item
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithDestinationItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/route/{origin}/{destination}{?commanderLevel*,gateLevel*}", pathParameters)
+        public WithDestinationItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/route/{origin}/{destination}{?commanderLevel*,gameVersion*,gateLevel*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace AEBestGatePath.Web.Client.Route.Item.Item
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithDestinationItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/route/{origin}/{destination}{?commanderLevel*,gateLevel*}", rawUrl)
+        public WithDestinationItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/route/{origin}/{destination}{?commanderLevel*,gameVersion*,gateLevel*}", rawUrl)
         {
         }
         /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Models.Stop"/></returns>
@@ -80,6 +80,8 @@ namespace AEBestGatePath.Web.Client.Route.Item.Item
         {
             [QueryParameter("commanderLevel")]
             public int? CommanderLevel { get; set; }
+            [QueryParameter("gameVersion")]
+            public double? GameVersion { get; set; }
             [QueryParameter("gateLevel")]
             public int? GateLevel { get; set; }
         }

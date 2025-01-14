@@ -1,2 +1,9 @@
 Warning: KiotaBuilder OpenAPI warning: #/ - Multiple servers entries were found in the OpenAPI description. Only the first one will be used. The root URL can be set manually with the request adapter.
 Warning: KiotaBuilder OpenAPI warning: #/components/schemas/Astro/properties/server - The format char is not supported by Kiota for the type string and the string type will be used.
+Warning: KiotaBuilder OpenAPI warning: #/components/schemas/Location/properties/server - The format char is not supported by Kiota for the type string and the string type will be used.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Guild/properties/players/items - The reference string '#/components/schemas/#/items' has invalid format.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Guild4/properties - The reference string '#/components/schemas/#/items/properties/players' has invalid format.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Guild6/properties - The reference string '#/components/schemas/#/properties/players' has invalid format.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Player/properties/gates/items - The reference string '#/components/schemas/#/items' has invalid format.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Player3/properties/gates/items - The reference string '#/components/schemas/#/items/properties/players/items' has invalid format.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/Player4/properties/gates/items - The reference string '#/components/schemas/#/properties/players/items' has invalid format.

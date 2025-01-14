@@ -22,4 +22,10 @@ public record Location(
     {
         return new Astro(Server, Cluster, Galaxy, RegionX, RegionY, SystemX, SystemY, Ring, RingPosition, GateLevel, LogiCommander);
     }
+
+    public static Location FromAstro(Astro astro)
+    {
+        return new Location(astro.Server, astro.Cluster, astro.Galaxy, astro.RegionX, astro.RegionY, astro.SystemX,
+            astro.SystemY, astro.Ring, astro.RingPosition, astro.GateLevel, astro.LogiCommander);
+    }
 }

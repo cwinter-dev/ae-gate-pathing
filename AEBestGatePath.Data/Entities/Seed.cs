@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace AEBestGatePath.Data.Entities;
 
 [Index(nameof(Name), IsUnique = true)]
-public class Guild
+public class Seed
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-    public required string Name { get; set; }
-    public required int GameId { get; set; }
-    public List<Gate> Players { get; set; } = [];
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

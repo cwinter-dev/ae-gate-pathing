@@ -23,4 +23,15 @@
       <ProjectReference Include="..\AEBestGatePath.Core\AEBestGatePath.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Migrations\Data\initalbasesrawquad.txt" />
+      <Content Include="Migrations\Data\initialbasesrawquad.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Migrations\Data\initialplayersrawquad.txt" />
+      <Content Include="Migrations\Data\initialplayersrawquad.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

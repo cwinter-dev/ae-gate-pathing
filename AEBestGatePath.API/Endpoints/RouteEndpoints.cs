@@ -9,7 +9,7 @@ public static class RouteEndpoints
     public static void MapRouteEndpoints(this RouteGroupBuilder group)
     {
         group.MapGet("/{origin}/{destination}", async (string origin, string destination, int? gateLevel,
-            int? commanderLevel, AstroEmpiresContext db) =>
+            int? commanderLevel, AstroEmpiresContext db, decimal gameVersion = 1m) =>
         {
             var jgs = await db.Gates.Where(x => !x.Occupied).Select(x => x.Location).Select(x => x.ToAstro()).ToListAsync();
 
@@ -31,7 +31,7 @@ public static class RouteEndpoints
                     commanderLevel ?? existingLocation?.Location.LogiCommander ?? 0);
             }
 
-            var journey = new Journey(start, new Astro(destination), jgs);
+            var journey = new Journey(start, new Astro(destination), jgs, gameVersion);
             return journey.GetShortestPath();
         });
     }

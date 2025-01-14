@@ -47,7 +47,7 @@ else
     {
         _route.Clear();
         _stop = await Client.Route["A70:51:45:10"]["A77:28:98:12"].GetAsync();
-        if (_stop != null)
+        while (_stop != null)
         {
             _route.Add(_stop.Node!);
             _stop = _stop.Next;

@@ -9,8 +9,8 @@ using Microsoft.Kiota.Http.HttpClientLibrary;
 
 // using Microsoft.Kiota.Http.HttpClientLibrary.Middleware;
 // using Microsoft.Kiota.Http.HttpClientLibrary.Middleware.Options;
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -26,7 +26,7 @@ builder.Services.AddOidcAuthentication(options =>
 builder.Services.AddScoped<IAuthenticationProvider, AnonymousAuthenticationProvider>();
 
 builder.Services
-    .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client => client.BaseAddress = new Uri("https://localhost:50420"))
+    .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client => client.BaseAddress = new Uri("http://localhost:50420"))
     //.AddHttpMessageHandler<CookieHandler>()
     ;
 

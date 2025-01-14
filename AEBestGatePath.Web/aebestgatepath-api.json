@@ -6,6 +6,9 @@
   },
   "servers": [
     {
+      "url": "https://localhost:44366"
+    },
+    {
       "url": "https://localhost:7169"
     },
     {
@@ -42,7 +45,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gate"
+                "$ref": "#/components/schemas/Gate2"
               }
             }
           },
@@ -96,7 +99,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gate"
+                "$ref": "#/components/schemas/Gate2"
               }
             }
           },
@@ -167,6 +170,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "gameVersion",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -179,6 +191,123 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/guilds": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Guild3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Guild5"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/guilds/{id}": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Guild5"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -250,18 +379,28 @@
         }
       },
       "Gate": {
+        "required": [
+          "location"
+        ],
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string",
             "nullable": true
           },
-          "astro": {
-            "$ref": "#/components/schemas/Astro"
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "player": {
+            "$ref": "#/components/schemas/Player"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
           },
           "occupied": {
             "type": "boolean"
@@ -271,6 +410,463 @@
             "format": "date-time"
           }
         }
+      },
+      "Gate2": {
+        "required": [
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "player": {
+            "$ref": "#/components/schemas/Player2"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "occupied": {
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Gate3": {
+        "required": [
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "player": {
+            "$ref": "#/components/schemas/Player3"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "occupied": {
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Gate4": {
+        "required": [
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "player": {
+            "$ref": "#/components/schemas/Player4"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "occupied": {
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Guild": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/#/items"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "Guild2": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Gate"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "Guild3": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Gate3"
+            }
+          }
+        }
+      },
+      "Guild4": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "$ref": "#/components/schemas/#/items/properties/players"
+          }
+        },
+        "nullable": true
+      },
+      "Guild5": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Gate4"
+            }
+          }
+        }
+      },
+      "Guild6": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "$ref": "#/components/schemas/#/properties/players"
+          }
+        },
+        "nullable": true
+      },
+      "Location": {
+        "required": [
+          "server",
+          "cluster",
+          "galaxy",
+          "regionX",
+          "regionY",
+          "systemX",
+          "systemY",
+          "ring",
+          "ringPosition",
+          "gateLevel",
+          "logiCommander"
+        ],
+        "type": "object",
+        "properties": {
+          "server": {
+            "maxLength": 1,
+            "minLength": 1,
+            "type": "string",
+            "format": "char"
+          },
+          "cluster": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "galaxy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "regionX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "regionY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ring": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ringPosition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gateLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logiCommander": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Player": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "guildId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "guild": {
+            "$ref": "#/components/schemas/Guild"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/#/items"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "Player2": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "guildId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "guild": {
+            "$ref": "#/components/schemas/Guild2"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Gate"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "Player3": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "guildId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "guild": {
+            "$ref": "#/components/schemas/Guild4"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/#/items/properties/players/items"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "Player4": {
+        "required": [
+          "name",
+          "gameId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "guildId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "guild": {
+            "$ref": "#/components/schemas/Guild6"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/#/properties/players/items"
+            }
+          }
+        },
+        "nullable": true
       },
       "Stop": {
         "required": [

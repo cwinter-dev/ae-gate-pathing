@@ -25,14 +25,12 @@ namespace AEBestGatePath.Data.Migrations
 
             modelBuilder.Entity("AEBestGatePath.Data.Entities.Gate", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("GuildId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("GuildId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
@@ -43,8 +41,8 @@ namespace AEBestGatePath.Data.Migrations
                     b.Property<bool>("Occupied")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid");
 
                     b.ComplexProperty<Dictionary<string, object>>("Location", "AEBestGatePath.Data.Entities.Gate.Location#Location", b1 =>
                         {
@@ -95,11 +93,9 @@ namespace AEBestGatePath.Data.Migrations
 
             modelBuilder.Entity("AEBestGatePath.Data.Entities.Guild", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
@@ -110,22 +106,37 @@ namespace AEBestGatePath.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Guilds");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b70b6921-9ee7-4cba-914f-c4bc619dc4b2"),
+                            GameId = 12530,
+                            Name = "actually four guilds"
+                        },
+                        new
+                        {
+                            Id = new Guid("17f9eba5-63bf-4ad0-9415-70b6e482fd7a"),
+                            GameId = 6469,
+                            Name = "CRUEL"
+                        });
                 });
 
             modelBuilder.Entity("AEBestGatePath.Data.Entities.Player", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("GuildId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("GuildId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -135,7 +146,30 @@ namespace AEBestGatePath.Data.Migrations
 
                     b.HasIndex("GuildId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("AEBestGatePath.Data.Entities.Seed", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("SeedData");
                 });
 
             modelBuilder.Entity("AEBestGatePath.Data.Entities.Gate", b =>
@@ -144,9 +178,13 @@ namespace AEBestGatePath.Data.Migrations
                         .WithMany("Players")
                         .HasForeignKey("GuildId");
 
-                    b.HasOne("AEBestGatePath.Data.Entities.Player", null)
+                    b.HasOne("AEBestGatePath.Data.Entities.Player", "Player")
                         .WithMany("Gates")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("AEBestGatePath.Data.Entities.Player", b =>
