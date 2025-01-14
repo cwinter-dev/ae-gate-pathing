@@ -1,0 +1,2 @@
+Warning: KiotaBuilder OpenAPI warning: #/ - Multiple servers entries were found in the OpenAPI description. Only the first one will be used. The root URL can be set manually with the request adapter.
+Warning: KiotaBuilder OpenAPI warning: #/components/schemas/Astro/properties/server - The format char is not supported by Kiota for the type string and the string type will be used.

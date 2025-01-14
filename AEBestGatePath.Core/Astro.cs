@@ -67,7 +67,7 @@ public readonly partial record struct Astro
 
     public bool Equals(Astro other)
     {
-        return Server == other.Server && Cluster == other.Cluster && Galaxy == other.Galaxy && RegionX == other.RegionX && RegionY == other.RegionY && SystemX == other.SystemX && SystemY == other.SystemY && Ring == other.Ring && RingPosition == other.RingPosition && GateLevel == other.GateLevel && LogiCommander == other.LogiCommander;
+        return Server == other.Server && Cluster == other.Cluster && Galaxy == other.Galaxy && RegionX == other.RegionX && RegionY == other.RegionY && SystemX == other.SystemX && SystemY == other.SystemY && Ring == other.Ring && RingPosition == other.RingPosition;// && GateLevel == other.GateLevel && LogiCommander == other.LogiCommander;
     }
 
     public override int GetHashCode()
@@ -82,8 +82,8 @@ public readonly partial record struct Astro
         hashCode.Add(SystemY);
         hashCode.Add(Ring);
         hashCode.Add(RingPosition);
-        hashCode.Add(GateLevel);
-        hashCode.Add(LogiCommander);
+        // hashCode.Add(GateLevel);
+        // hashCode.Add(LogiCommander);
         return hashCode.ToHashCode();
     }
 
@@ -111,22 +111,34 @@ public readonly partial record struct Astro
             other.SystemY != SystemY);
     }
 
-    public decimal DistanceTo(Astro b)
+    public decimal DistanceTo(Astro b, decimal version = 1)
     {
+        if (Server != b.Server) return decimal.MaxValue;
         decimal distance = 0;
         // Galaxy Distance Calc
         if (IsDifferentGalaxy(b))
         {
-            if (Cluster != b.Cluster)
+            if (Cluster == b.Cluster)
+                distance += Math.Abs(b.Galaxy - Galaxy) * 200;
+            else if (version < 4)
             {
-                distance += 2000;
-                distance += (9 - b.Galaxy) * 200;
+                if (b.Cluster < Cluster)
+                {
+                    distance += (Galaxy) * 200;
+                    distance += 2000;
+                    distance += (9 - b.Galaxy) * 200;
+                }
+                else if (b.Cluster > Cluster)
+                {
+                    distance += (9 - Galaxy) * 200;
+                    distance += 2000;
+                    distance += (b.Galaxy) * 200;
+                }
             }
             else
             {
-                distance += Math.Abs(b.Galaxy - Galaxy) * 200;
+                throw new ApplicationException("Pumpkin map not implemented.");
             }
-
         }
         // System Distance Calc
         else if (IsDifferentSolarSystem(b))

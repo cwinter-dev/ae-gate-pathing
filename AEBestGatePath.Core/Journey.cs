@@ -2,10 +2,11 @@
 
 public class Journey
 {
-    public Journey(Astro source, Astro destination, IList<Astro> jgs)
+    public Journey(Astro source, Astro destination, IList<Astro> jgs, decimal gameVersion = 1)
     {
         Source = source;
         Destination = destination;
+        GameVersion = gameVersion;
         foreach (var jg in jgs)
         {
             var dist = jg.DistanceTo(Destination);
@@ -14,6 +15,7 @@ public class Journey
     }
     public Astro Source { get; init; }
     public Astro Destination { get; init; }
+    public decimal GameVersion { get; init; }
     private Dictionary<Astro, decimal> _jgMap = new();
 
     public Stop GetShortestPath()
@@ -21,8 +23,8 @@ public class Journey
         
         var n2 = true;
         var newPaths = new Dictionary<Stop, decimal>();
-        var baseDistance = Source.DistanceTo(Destination);
-        var root = new Stop(Source);
+        var baseDistance = Source.DistanceTo(Destination, GameVersion);
+        var root = new Stop(Source, GameVersion);
         newPaths.Add(root, baseDistance);
         
         Dictionary<Stop, decimal> paths = new();
@@ -48,9 +50,9 @@ public class Journey
                 // }
                 foreach (var jg in _jgMap
                              .Where(x => x.Key.Speed > lastStop.Node.Speed)
-                             .Where(x => pathDist + lastStop.Node.DistanceTo(x.Key) + x.Value < path.Value))
+                             .Where(x => pathDist + lastStop.Node.DistanceTo(x.Key, GameVersion) + x.Value < path.Value))
                 {
-                    addedPaths.Add(path.Key.Copy().AddStop(jg.Key), pathDist + lastStop.Node.DistanceTo(jg.Key) + jg.Value);
+                    addedPaths.Add(path.Key.Copy().AddStop(jg.Key), pathDist + lastStop.Node.DistanceTo(jg.Key, GameVersion) + jg.Value);
                 }
             }
             newPaths = addedPaths;
@@ -64,8 +66,8 @@ public class Journey
         
         var n2 = true;
         var newPaths = new Dictionary<Stop, decimal>();
-        var baseDistance = Source.DistanceTo(Destination);
-        var root = new Stop(Source);
+        var baseDistance = Source.DistanceTo(Destination, GameVersion);
+        var root = new Stop(Source, GameVersion);
         newPaths.Add(root, baseDistance);
         
         Dictionary<Stop, decimal> paths = new();
@@ -89,9 +91,9 @@ public class Journey
                 // }
                 foreach (var jg in _jgMap
                              .Where(x => x.Key.Speed > lastStop.Node.Speed)
-                             .Where(x => pathDist + lastStop.Node.DistanceTo(x.Key) + x.Value < shortestPath.dist))
+                             .Where(x => pathDist + lastStop.Node.DistanceTo(x.Key, GameVersion) + x.Value < shortestPath.dist))
                 {
-                    addedPaths.Add(path.Key.Copy().AddStop(jg.Key), pathDist + lastStop.Node.DistanceTo(jg.Key) + jg.Value);
+                    addedPaths.Add(path.Key.Copy().AddStop(jg.Key), pathDist + lastStop.Node.DistanceTo(jg.Key, GameVersion) + jg.Value);
                 }
             }
 

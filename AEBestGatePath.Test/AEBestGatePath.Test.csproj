@@ -18,4 +18,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AEBestGatePath.Core\AEBestGatePath.Core.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -2,18 +2,19 @@
 
 namespace AEBestGatePath.Core;
 
-public class Stop(Astro node)
+public class Stop(Astro node, decimal gameVersion = 1)
 {
     public Astro Node { get; init; } = node;
     public Stop? Next { get; private set; }
     public decimal DistanceToNext { get; private set; }
+    public decimal GameVersion { get; init; }
 
     public Stop AddStop(Astro node)
     {
         if (Next == null)
         {
-            Next = new Stop(node);
-            DistanceToNext = Node.DistanceTo(Next.Node);
+            Next = new Stop(node, GameVersion);
+            DistanceToNext = Node.DistanceTo(Next.Node, GameVersion);
         }
         else
             Next.AddStop(node);
@@ -28,7 +29,7 @@ public class Stop(Astro node)
 
     public Stop Copy()
     {
-        return new Stop(Node)
+        return new Stop(Node, GameVersion)
         {
             Next = Next?.Copy(),
             DistanceToNext = DistanceToNext

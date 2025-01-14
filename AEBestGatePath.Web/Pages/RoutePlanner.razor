@@ -1,0 +1,57 @@
+﻿@page "/routeplanner"
+@using System.Net
+@using AEBestGatePath.Web.Client.Models
+@using AEBestGatePath.Web.Utils
+@inject AEBestGatePathClient Client
+
+<PageTitle>Route Planner</PageTitle>
+
+<h1>RoutePlanner</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (_route == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Location</th>
+            <th>Gate Level</th>
+            <th>Commander Level</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var gate in _route)
+        {
+            <tr>
+                <td><a href="https://alpha.astroempires.com/map.aspx?loc=@gate.FormatLocation()">@gate.FormatLocation()</a></td>
+                <td>@gate.GateLevel</td>
+                <td>@gate.LogiCommander</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Stop? _stop;
+    private List<Astro> _route = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _route.Clear();
+        _stop = await Client.Route["A70:51:45:10"]["A77:28:98:12"].GetAsync();
+        if (_stop != null)
+        {
+            _route.Add(_stop.Node!);
+            _stop = _stop.Next;
+        }
+    }
+
+}

@@ -1,0 +1,305 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AEBestGatePath.API | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7169"
+    },
+    {
+      "url": "http://localhost:50420"
+    }
+  ],
+  "paths": {
+    "/gates": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Gate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Gate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/gates/{id}": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Gate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/route/{origin}/{destination}": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gateLevel",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "commanderLevel",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stop"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Astro": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "maxLength": 1,
+            "minLength": 1,
+            "type": "string",
+            "format": "char"
+          },
+          "cluster": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "galaxy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locationX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locationY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "regionX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "regionY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ring": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ringPosition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gateLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logiCommander": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "speed": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Gate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "astro": {
+            "$ref": "#/components/schemas/Astro"
+          },
+          "occupied": {
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Stop": {
+        "required": [
+          "node"
+        ],
+        "type": "object",
+        "properties": {
+          "node": {
+            "$ref": "#/components/schemas/Astro"
+          },
+          "next": {
+            "$ref": "#/components/schemas/Stop"
+          },
+          "distanceToNext": {
+            "type": "number",
+            "format": "double"
+          },
+          "gameVersion": {
+            "type": "number",
+            "format": "double",
+            "default": 1
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "AEBestGatePath.API"
+    }
+  ]
+}
