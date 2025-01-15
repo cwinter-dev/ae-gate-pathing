@@ -21,6 +21,7 @@ public static class GateEndpoints
 
         group.MapPost("/", async (Gate gate, AstroEmpiresContext db) =>
         {
+            
             db.Gates.Add(gate);
             await db.SaveChangesAsync();
 

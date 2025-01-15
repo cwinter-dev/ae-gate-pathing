@@ -3,7 +3,7 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
+        Hello, @context.User.Identity?.Name (@string.Join(' ', context.User.Claims.Select(x => x.Type + ' ' + x.Value))!
         <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
     </Authorized>
     <NotAuthorized>

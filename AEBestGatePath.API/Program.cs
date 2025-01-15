@@ -20,14 +20,20 @@ builder.Services.AddDbContext<AstroEmpiresContext>(opt => opt.UseNpgsql(
     builder.Configuration.GetConnectionString("AstroEmpiresContext"),
     o => o.SetPostgresVersion(16, 0)));
 
+// The new custom claims will propagate to the user's ID token the
+// next time a new one is issued.
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.UseCors(allowSpecificOrigins);
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

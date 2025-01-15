@@ -18,10 +18,19 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddOidcAuthentication(options =>
 {
+    options.ProviderOptions.Authority = "https://accounts.google.com/";
+    options.ProviderOptions.ClientId = "704748717086-sr5n5p4qlalrm4nljbqhh7du06qj8i2d.apps.googleusercontent.com";
+    // options.ProviderOptions.DefaultScopes.Add("openid");
+    // options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/userinfo.email");
+    // options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/userinfo.profile");
+    options.ProviderOptions.ResponseType = "id_token";
+    options.ProviderOptions.DefaultScopes.Add("openid");
+    options.ProviderOptions.DefaultScopes.Add("profile");
     // Configure your authentication provider options here.
     // For more information, see https://aka.ms/blazor-standalone-auth
-    builder.Configuration.Bind("Local", options.ProviderOptions);
+    // builder.Configuration.Bind("Local", options.ProviderOptions);
 });
+
 // Add the Kiota Client.
 builder.Services.AddScoped<IAuthenticationProvider, AnonymousAuthenticationProvider>();
 
