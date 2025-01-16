@@ -1,5 +1,5 @@
 ﻿using AEBestGatePath.Core;
-using AEBestGatePath.Data.Context;
+using AEBestGatePath.Data.AstroEmpires.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace AEBestGatePath.API.Endpoints;

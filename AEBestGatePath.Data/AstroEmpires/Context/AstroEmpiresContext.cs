@@ -1,9 +1,8 @@
-﻿using AEBestGatePath.Core;
-using AEBestGatePath.Core.Parsers;
-using AEBestGatePath.Data.Entities;
+﻿using AEBestGatePath.Core.Parsers;
+using AEBestGatePath.Data.AstroEmpires.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace AEBestGatePath.Data.Context;
+namespace AEBestGatePath.Data.AstroEmpires.Context;
 
 public class AstroEmpiresContext : DbContext
 {

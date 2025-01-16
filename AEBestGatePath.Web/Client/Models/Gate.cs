@@ -5,7 +5,7 @@ using Microsoft.Kiota.Abstractions.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
-namespace AEBestGatePath.Web.Client.Models
+namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
@@ -21,10 +21,10 @@ namespace AEBestGatePath.Web.Client.Models
         /// <summary>The location property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Location? Location { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Location? Location { get; set; }
 #nullable restore
 #else
-        public global::AEBestGatePath.Web.Client.Models.Location Location { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Location Location { get; set; }
 #endif
         /// <summary>The name property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -39,15 +39,15 @@ namespace AEBestGatePath.Web.Client.Models
         /// <summary>The player property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Player? Player { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Player? Player { get; set; }
 #nullable restore
 #else
-        public global::AEBestGatePath.Web.Client.Models.Player Player { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Player Player { get; set; }
 #endif
         /// <summary>The playerId property</summary>
         public Guid? PlayerId { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Models.Gate"/> and sets the default values.
+        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Gate"/> and sets the default values.
         /// </summary>
         public Gate()
         {
@@ -56,12 +56,12 @@ namespace AEBestGatePath.Web.Client.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Models.Gate"/></returns>
+        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Models.Gate"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::AEBestGatePath.Web.Client.Models.Gate CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::AEBestGatePath.API.Client.Models.Gate CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::AEBestGatePath.Web.Client.Models.Gate();
+            return new global::AEBestGatePath.API.Client.Models.Gate();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -73,10 +73,10 @@ namespace AEBestGatePath.Web.Client.Models
             {
                 { "id", n => { Id = n.GetGuidValue(); } },
                 { "lastUpdated", n => { LastUpdated = n.GetDateTimeOffsetValue(); } },
-                { "location", n => { Location = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Location>(global::AEBestGatePath.Web.Client.Models.Location.CreateFromDiscriminatorValue); } },
+                { "location", n => { Location = n.GetObjectValue<global::AEBestGatePath.API.Client.Models.Location>(global::AEBestGatePath.API.Client.Models.Location.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
                 { "occupied", n => { Occupied = n.GetBoolValue(); } },
-                { "player", n => { Player = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Player>(global::AEBestGatePath.Web.Client.Models.Player.CreateFromDiscriminatorValue); } },
+                { "player", n => { Player = n.GetObjectValue<global::AEBestGatePath.API.Client.Models.Player>(global::AEBestGatePath.API.Client.Models.Player.CreateFromDiscriminatorValue); } },
                 { "playerId", n => { PlayerId = n.GetGuidValue(); } },
             };
         }
@@ -89,10 +89,10 @@ namespace AEBestGatePath.Web.Client.Models
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             writer.WriteGuidValue("id", Id);
             writer.WriteDateTimeOffsetValue("lastUpdated", LastUpdated);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Location>("location", Location);
+            writer.WriteObjectValue<global::AEBestGatePath.API.Client.Models.Location>("location", Location);
             writer.WriteStringValue("name", Name);
             writer.WriteBoolValue("occupied", Occupied);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Player>("player", Player);
+            writer.WriteObjectValue<global::AEBestGatePath.API.Client.Models.Player>("player", Player);
             writer.WriteGuidValue("playerId", PlayerId);
             writer.WriteAdditionalData(AdditionalData);
         }

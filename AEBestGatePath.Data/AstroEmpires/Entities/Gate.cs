@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AEBestGatePath.Data.Entities;
+namespace AEBestGatePath.Data.AstroEmpires.Entities;
 
 public class Gate
 {

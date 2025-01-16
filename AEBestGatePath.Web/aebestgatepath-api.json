@@ -6,12 +6,6 @@
   },
   "servers": [
     {
-      "url": "https://localhost:44366"
-    },
-    {
-      "url": "https://localhost:7169"
-    },
-    {
       "url": "http://localhost:50420"
     }
   ],
@@ -308,6 +302,35 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/accounts/register-google-user": {
+      "post": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterGoogleUserModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseModel"
+                }
+              }
+            }
           }
         }
       }
@@ -868,6 +891,20 @@
         },
         "nullable": true
       },
+      "RegisterGoogleUserModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        }
+      },
       "Stop": {
         "required": [
           "node"
@@ -888,6 +925,17 @@
             "type": "number",
             "format": "double",
             "default": 1
+          }
+        }
+      },
+      "TokenResponseModel": {
+        "required": [
+          "jwtToken"
+        ],
+        "type": "object",
+        "properties": {
+          "jwtToken": {
+            "type": "string"
           }
         }
       }

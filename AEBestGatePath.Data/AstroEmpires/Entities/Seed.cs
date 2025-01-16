@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace AEBestGatePath.Data.Entities;
+namespace AEBestGatePath.Data.AstroEmpires.Entities;
 
 [Index(nameof(Name), IsUnique = true)]
 public class Seed

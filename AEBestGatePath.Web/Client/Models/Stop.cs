@@ -5,7 +5,7 @@ using Microsoft.Kiota.Abstractions.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
-namespace AEBestGatePath.Web.Client.Models
+namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
@@ -21,21 +21,21 @@ namespace AEBestGatePath.Web.Client.Models
         /// <summary>The next property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Stop? Next { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Stop? Next { get; set; }
 #nullable restore
 #else
-        public global::AEBestGatePath.Web.Client.Models.Stop Next { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Stop Next { get; set; }
 #endif
         /// <summary>The node property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::AEBestGatePath.Web.Client.Models.Astro? Node { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Astro? Node { get; set; }
 #nullable restore
 #else
-        public global::AEBestGatePath.Web.Client.Models.Astro Node { get; set; }
+        public global::AEBestGatePath.API.Client.Models.Astro Node { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.Web.Client.Models.Stop"/> and sets the default values.
+        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Stop"/> and sets the default values.
         /// </summary>
         public Stop()
         {
@@ -44,12 +44,12 @@ namespace AEBestGatePath.Web.Client.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::AEBestGatePath.Web.Client.Models.Stop"/></returns>
+        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Models.Stop"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::AEBestGatePath.Web.Client.Models.Stop CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::AEBestGatePath.API.Client.Models.Stop CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::AEBestGatePath.Web.Client.Models.Stop();
+            return new global::AEBestGatePath.API.Client.Models.Stop();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -61,8 +61,8 @@ namespace AEBestGatePath.Web.Client.Models
             {
                 { "distanceToNext", n => { DistanceToNext = n.GetDoubleValue(); } },
                 { "gameVersion", n => { GameVersion = n.GetDoubleValue(); } },
-                { "next", n => { Next = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Stop>(global::AEBestGatePath.Web.Client.Models.Stop.CreateFromDiscriminatorValue); } },
-                { "node", n => { Node = n.GetObjectValue<global::AEBestGatePath.Web.Client.Models.Astro>(global::AEBestGatePath.Web.Client.Models.Astro.CreateFromDiscriminatorValue); } },
+                { "next", n => { Next = n.GetObjectValue<global::AEBestGatePath.API.Client.Models.Stop>(global::AEBestGatePath.API.Client.Models.Stop.CreateFromDiscriminatorValue); } },
+                { "node", n => { Node = n.GetObjectValue<global::AEBestGatePath.API.Client.Models.Astro>(global::AEBestGatePath.API.Client.Models.Astro.CreateFromDiscriminatorValue); } },
             };
         }
         /// <summary>
@@ -74,8 +74,8 @@ namespace AEBestGatePath.Web.Client.Models
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             writer.WriteDoubleValue("distanceToNext", DistanceToNext);
             writer.WriteDoubleValue("gameVersion", GameVersion);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Stop>("next", Next);
-            writer.WriteObjectValue<global::AEBestGatePath.Web.Client.Models.Astro>("node", Node);
+            writer.WriteObjectValue<global::AEBestGatePath.API.Client.Models.Stop>("next", Next);
+            writer.WriteObjectValue<global::AEBestGatePath.API.Client.Models.Astro>("node", Node);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

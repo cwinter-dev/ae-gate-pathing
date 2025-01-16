@@ -1,5 +1,7 @@
+using AEBestGatePath.API.Auth;
 using AEBestGatePath.API.Endpoints;
-using AEBestGatePath.Data.Context;
+using AEBestGatePath.Data.AstroEmpires.Context;
+using AEBestGatePath.Data.Auth.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +18,17 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddDbContext<AuthContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AuthContext"),
+        o => o.SetPostgresVersion(16, 6));
+});
+
 builder.Services.AddDbContext<AstroEmpiresContext>(opt => opt.UseNpgsql(
     builder.Configuration.GetConnectionString("AstroEmpiresContext"),
-    o => o.SetPostgresVersion(16, 0)));
-
+    o => o.SetPostgresVersion(16, 6)));
+builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+builder.Services.AddScoped<IAccountService, AccountService>();
 // The new custom claims will propagate to the user's ID token the
 // next time a new one is issued.
 
@@ -52,5 +61,7 @@ app.MapGroup("/route")
     .MapRouteEndpoints();
 app.MapGroup("/guilds")
     .MapGuildEndpoints();
+app.MapGroup("/accounts")
+    .MapAccountEndpoints();
 
 app.Run();

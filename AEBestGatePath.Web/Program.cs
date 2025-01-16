@@ -1,7 +1,9 @@
+using AEBestGatePath.API.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using AEBestGatePath.Web;
-using AEBestGatePath.Web.Client;
+using AEBestGatePath.Web.Auth;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
@@ -21,15 +23,17 @@ builder.Services.AddOidcAuthentication(options =>
     options.ProviderOptions.Authority = "https://accounts.google.com/";
     options.ProviderOptions.ClientId = "704748717086-sr5n5p4qlalrm4nljbqhh7du06qj8i2d.apps.googleusercontent.com";
     // options.ProviderOptions.DefaultScopes.Add("openid");
+    options.ProviderOptions.ResponseType = "id_token";
     // options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/userinfo.email");
     // options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/userinfo.profile");
-    options.ProviderOptions.ResponseType = "id_token";
     options.ProviderOptions.DefaultScopes.Add("openid");
     options.ProviderOptions.DefaultScopes.Add("profile");
+    options.ProviderOptions.DefaultScopes.Add("email");
     // Configure your authentication provider options here.
     // For more information, see https://aka.ms/blazor-standalone-auth
     // builder.Configuration.Bind("Local", options.ProviderOptions);
-});
+})
+.AddAccountClaimsPrincipalFactory<RemoteAuthenticationState, RemoteUserAccount, CustomAccountFactory>();;
 
 // Add the Kiota Client.
 builder.Services.AddScoped<IAuthenticationProvider, AnonymousAuthenticationProvider>();

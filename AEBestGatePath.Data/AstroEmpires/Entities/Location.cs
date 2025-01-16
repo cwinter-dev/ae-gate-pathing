@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using AEBestGatePath.Core;
 
-namespace AEBestGatePath.Data.Entities;
+namespace AEBestGatePath.Data.AstroEmpires.Entities;
 
 [ComplexType]
 public record Location(

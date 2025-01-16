@@ -1,4 +1,4 @@
-﻿using AEBestGatePath.Web.Client.Models;
+﻿using AEBestGatePath.API.Client.Models;
 
 namespace AEBestGatePath.Web.Utils;
 
