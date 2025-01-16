@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AEBestGatePath.Data.Auth.Context;
 using AEBestGatePath.Data.Auth.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,8 +20,7 @@ public class AccountService(
     private readonly TokenSettings _tokenSettings = tokenSettings.Value;
     
     private async Task<User> CreateNewUser(
-        RegisterGoogleUserModel googleUserModel,
-        List<UserRoles> userRoles)
+        RegisterGoogleUserModel googleUserModel)
     {
         var user = new User
         {
@@ -28,15 +28,6 @@ public class AccountService(
             Name = googleUserModel.Name,
         };
         _authContext.User.Add(user);
-        await _authContext.SaveChangesAsync();
- 
-        var defaultRole = new UserRoles
-        {
-            Name = "admin",
-            UserId = user.UserId
-        };
- 
-        userRoles.Add(defaultRole);
         await _authContext.SaveChangesAsync();
         return user;
     }
@@ -67,15 +58,9 @@ public class AccountService(
     }
     public async Task<TokenResponseModel> RegisterGoogleUser(RegisterGoogleUserModel googleUserModel)
     {
-        var user = _authContext.User.FirstOrDefault(x => x.GoogleUid == googleUserModel.Uid);
-        var userRoles = new List<UserRoles>();
-        user ??= await CreateNewUser(googleUserModel, userRoles);
+        var user = _authContext.User.Include(x => x.UserRoles).FirstOrDefault(x => x.GoogleUid == googleUserModel.Uid);
+        user ??= await CreateNewUser(googleUserModel);
  
-        if (userRoles.Count == 0)
-        {
-            userRoles = _authContext.UserRoles.Where(x => x.UserId == user.UserId).ToList();
-        }
- 
-        return new TokenResponseModel(GetJWTAuthKey(userRoles));
+        return new TokenResponseModel(GetJWTAuthKey(user.UserRoles));
     }
 }

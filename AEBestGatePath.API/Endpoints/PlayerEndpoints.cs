@@ -25,7 +25,7 @@ public static class PlayerEndpoints
             await db.SaveChangesAsync();
 
             return Results.Created($"/players/{player.Id}", player);
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapPut("/{id:int}", async (int id, Player inputPlayer, AstroEmpiresContext db) =>
         {
@@ -39,7 +39,7 @@ public static class PlayerEndpoints
             await db.SaveChangesAsync();
 
             return Results.NoContent();
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
         {
@@ -48,7 +48,7 @@ public static class PlayerEndpoints
             await db.SaveChangesAsync();
             return Results.NoContent();
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
         
     }
 }

@@ -1,8 +1,10 @@
+using System.Text;
 using AEBestGatePath.API.Auth;
 using AEBestGatePath.API.Endpoints;
 using AEBestGatePath.Data.AstroEmpires.Context;
 using AEBestGatePath.Data.Auth.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +37,25 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthentication().AddJwtBearer(options =>
+{
+    var tokenSettings = builder.Configuration
+        .GetSection("TokenSettings").Get<TokenSettings>();
+    if (tokenSettings == null) throw new ApplicationException(nameof(tokenSettings) + " is null");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = tokenSettings.Issuer,
+        ValidateIssuer = true,
+        ValidAudience = tokenSettings.Audience,
+        ValidateAudience = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key)),
+        ValidateIssuerSigningKey = true,
+    };
+});
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("admin", policy =>
+        policy
+            .RequireRole("admin"));
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

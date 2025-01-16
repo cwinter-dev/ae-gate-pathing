@@ -12,5 +12,6 @@ namespace AEBestGatePath.Data.Auth.Models
         public string GoogleUid { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefershTokenExpiration { get; set; }
+        public List<UserRoles> UserRoles { get; set; } = [];
     }
 }

@@ -10,11 +10,15 @@ namespace AEBestGatePath.Web.Auth
     : AccountClaimsPrincipalFactory<RemoteUserAccount>
     {
         private readonly AEBestGatePathClient _appAuthClient;
+        private readonly APIJWTTokenProvider _apijwtTokenProvider;
+
         public CustomAccountFactory(IAccessTokenProviderAccessor accessor,
-            AEBestGatePathClient appAuthClient
+            AEBestGatePathClient appAuthClient,
+            APIJWTTokenProvider apijwtTokenProvider
             ) : base(accessor)
         {
             _appAuthClient = appAuthClient;
+            _apijwtTokenProvider = apijwtTokenProvider;
         }
  
         public override async ValueTask<ClaimsPrincipal> CreateUserAsync(
@@ -38,6 +42,7 @@ namespace AEBestGatePath.Web.Auth
                         ((ClaimsIdentity)initialUser.Identity).AddClaim(
                             new Claim("APIjwt", response.JwtToken)
                         );
+                        _apijwtTokenProvider.AccessToken = response.JwtToken;
                     }
 
                 }

@@ -26,7 +26,7 @@ public static class GateEndpoints
             await db.SaveChangesAsync();
 
             return Results.Created($"/gates/{gate.Id}", gate);
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapPut("/{id:int}", async (int id, Gate inputGate, AstroEmpiresContext db) =>
         {
@@ -43,7 +43,7 @@ public static class GateEndpoints
             await db.SaveChangesAsync();
 
             return Results.NoContent();
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
         {
@@ -52,7 +52,7 @@ public static class GateEndpoints
             await db.SaveChangesAsync();
             return Results.NoContent();
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
         
     }
 }

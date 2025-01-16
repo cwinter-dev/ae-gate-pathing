@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
+using IAccessTokenProvider = Microsoft.Kiota.Abstractions.Authentication.IAccessTokenProvider;
 
 // using Microsoft.Kiota.Http.HttpClientLibrary.Middleware;
 // using Microsoft.Kiota.Http.HttpClientLibrary.Middleware.Options;
@@ -36,23 +37,17 @@ builder.Services.AddOidcAuthentication(options =>
 .AddAccountClaimsPrincipalFactory<RemoteAuthenticationState, RemoteUserAccount, CustomAccountFactory>();;
 
 // Add the Kiota Client.
-builder.Services.AddScoped<IAuthenticationProvider, AnonymousAuthenticationProvider>();
+builder.Services.AddScoped<IAccessTokenProvider, APIJWTTokenProvider>();
+builder.Services.AddScoped<IAuthenticationProvider, BaseBearerTokenAuthenticationProvider>();
+builder.Services.AddScoped<APIJWTTokenProvider>();
 
 builder.Services
-    .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client => client.BaseAddress = new Uri("http://localhost:50420"))
+    .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:50420");
+    });
     //.AddHttpMessageHandler<CookieHandler>()
-    ;
 
 builder.Services.AddScoped<AEBestGatePathClient>();
 
 await builder.Build().RunAsync();
-
-public class CookieHandler : DelegatingHandler
-{
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
-
-        return await base.SendAsync(request, cancellationToken);
-    }
-}

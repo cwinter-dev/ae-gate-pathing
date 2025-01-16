@@ -25,7 +25,7 @@ public static class GuildEndpoints
             await db.SaveChangesAsync();
 
             return Results.Created($"/guilds/{guild.Id}", guild);
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapPut("/{id:int}", async (int id, Guild inputGuild, AstroEmpiresContext db) =>
         {
@@ -38,7 +38,7 @@ public static class GuildEndpoints
             await db.SaveChangesAsync();
 
             return Results.NoContent();
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
 
         group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
         {
@@ -47,7 +47,7 @@ public static class GuildEndpoints
             await db.SaveChangesAsync();
             return Results.NoContent();
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("admin");
         
     }
 }
