@@ -21,7 +21,7 @@ namespace AEBestGatePath.API.Client.Guilds
         /// <summary>Gets an item from the AEBestGatePath.API.Client.guilds.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>
         /// <returns>A <see cref="global::AEBestGatePath.API.Client.Guilds.Item.GuildsItemRequestBuilder"/></returns>
-        public global::AEBestGatePath.API.Client.Guilds.Item.GuildsItemRequestBuilder this[int position]
+        public global::AEBestGatePath.API.Client.Guilds.Item.GuildsItemRequestBuilder this[Guid position]
         {
             get
             {
@@ -59,20 +59,20 @@ namespace AEBestGatePath.API.Client.Guilds
         public GuildsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/guilds", rawUrl)
         {
         }
-        /// <returns>A List&lt;global::AEBestGatePath.API.Client.Models.Guild3&gt;</returns>
+        /// <returns>A List&lt;global::AEBestGatePath.API.Client.Models.Guild&gt;</returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<List<global::AEBestGatePath.API.Client.Models.Guild3>?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<List<global::AEBestGatePath.API.Client.Models.Guild>?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<List<global::AEBestGatePath.API.Client.Models.Guild3>> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<List<global::AEBestGatePath.API.Client.Models.Guild>> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AEBestGatePath.API.Client.Models.Guild3>(requestInfo, global::AEBestGatePath.API.Client.Models.Guild3.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AEBestGatePath.API.Client.Models.Guild>(requestInfo, global::AEBestGatePath.API.Client.Models.Guild.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
             return collectionResult?.AsList();
         }
         /// <returns>A <see cref="Stream"/></returns>
@@ -81,11 +81,11 @@ namespace AEBestGatePath.API.Client.Guilds
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<Stream?> PostAsync(global::AEBestGatePath.API.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<Stream?> PostAsync(global::AEBestGatePath.API.Client.Models.Guild body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<Stream> PostAsync(global::AEBestGatePath.API.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<Stream> PostAsync(global::AEBestGatePath.API.Client.Models.Guild body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
@@ -113,11 +113,11 @@ namespace AEBestGatePath.API.Client.Guilds
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public RequestInformation ToPostRequestInformation(global::AEBestGatePath.API.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        public RequestInformation ToPostRequestInformation(global::AEBestGatePath.API.Client.Models.Guild body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
         {
 #nullable restore
 #else
-        public RequestInformation ToPostRequestInformation(global::AEBestGatePath.API.Client.Models.Guild5 body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        public RequestInformation ToPostRequestInformation(global::AEBestGatePath.API.Client.Models.Guild body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));

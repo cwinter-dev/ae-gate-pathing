@@ -1,0 +1,17 @@
+@inject IJsDateInterop DateService
+@_localDate?.ToString("yyyy-MM-dd HH:mm:ss.FFF")
+@code {
+    [Parameter]
+    public DateTime? Date { get; set; }
+    private DateTime? _localDate;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _localDate = Date != null ? (await DateService.GetLocalDate(Date.Value)) : null;
+            InvokeAsync(StateHasChanged);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

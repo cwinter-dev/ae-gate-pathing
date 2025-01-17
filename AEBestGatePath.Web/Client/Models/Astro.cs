@@ -9,52 +9,43 @@ namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Astro : IAdditionalDataHolder, IParsable
+    public partial class Astro : IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
-        public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>The cluster property</summary>
-        public int? Cluster { get; set; }
+        public int? Cluster { get; private set; }
         /// <summary>The galaxy property</summary>
-        public int? Galaxy { get; set; }
+        public int? Galaxy { get; private set; }
         /// <summary>The gateLevel property</summary>
         public int? GateLevel { get; set; }
         /// <summary>The locationX property</summary>
-        public int? LocationX { get; set; }
+        public int? LocationX { get; private set; }
         /// <summary>The locationY property</summary>
-        public int? LocationY { get; set; }
+        public int? LocationY { get; private set; }
         /// <summary>The logiCommander property</summary>
         public int? LogiCommander { get; set; }
         /// <summary>The regionX property</summary>
-        public int? RegionX { get; set; }
+        public int? RegionX { get; private set; }
         /// <summary>The regionY property</summary>
-        public int? RegionY { get; set; }
+        public int? RegionY { get; private set; }
         /// <summary>The ring property</summary>
-        public int? Ring { get; set; }
+        public int? Ring { get; private set; }
         /// <summary>The ringPosition property</summary>
-        public int? RingPosition { get; set; }
+        public int? RingPosition { get; private set; }
         /// <summary>The server property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Server { get; set; }
+        public string? Server { get; private set; }
 #nullable restore
 #else
-        public string Server { get; set; }
+        public string Server { get; private set; }
 #endif
         /// <summary>The speed property</summary>
-        public double? Speed { get; set; }
+        public double? Speed { get; private set; }
         /// <summary>The systemX property</summary>
-        public int? SystemX { get; set; }
+        public int? SystemX { get; private set; }
         /// <summary>The systemY property</summary>
-        public int? SystemY { get; set; }
-        /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Astro"/> and sets the default values.
-        /// </summary>
-        public Astro()
-        {
-            AdditionalData = new Dictionary<string, object>();
-        }
+        public int? SystemY { get; private set; }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -96,21 +87,8 @@ namespace AEBestGatePath.API.Client.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
-            writer.WriteIntValue("cluster", Cluster);
-            writer.WriteIntValue("galaxy", Galaxy);
             writer.WriteIntValue("gateLevel", GateLevel);
-            writer.WriteIntValue("locationX", LocationX);
-            writer.WriteIntValue("locationY", LocationY);
             writer.WriteIntValue("logiCommander", LogiCommander);
-            writer.WriteIntValue("regionX", RegionX);
-            writer.WriteIntValue("regionY", RegionY);
-            writer.WriteIntValue("ring", Ring);
-            writer.WriteIntValue("ringPosition", RingPosition);
-            writer.WriteStringValue("server", Server);
-            writer.WriteDoubleValue("speed", Speed);
-            writer.WriteIntValue("systemX", SystemX);
-            writer.WriteIntValue("systemY", SystemY);
-            writer.WriteAdditionalData(AdditionalData);
         }
     }
 }

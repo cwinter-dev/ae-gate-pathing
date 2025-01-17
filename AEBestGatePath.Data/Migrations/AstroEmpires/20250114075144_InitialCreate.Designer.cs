@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AEBestGatePath.Data.Migrations
+namespace AEBestGatePath.Data.Migrations.AstroEmpires
 {
     [DbContext(typeof(AstroEmpiresContext))]
     [Migration("20250114075144_InitialCreate")]

@@ -1,0 +1,10 @@
+﻿@using AEBestGatePath.API.Client.Models
+
+<a href="https://alpha.astroempires.com/map.aspx?loc=@FormattedLocation" target="_blank">@(FormattedLocation)</a>
+
+@code {
+
+    [Parameter] public Location Location { get; set; } = new();
+
+    public string FormattedLocation => $"{Location.Server}{Location.Cluster}{Location.Galaxy}:{Location.RegionX}{Location.RegionY}:{Location.SystemX}{Location.SystemY}:{Location.Ring}{Location.RingPosition}";
+}

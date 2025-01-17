@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using AEBestGatePath.Web;
 using AEBestGatePath.Web.Auth;
+using AEBestGatePath.Web.Shared.Date;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.Kiota.Abstractions;
@@ -16,6 +17,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.Services.AddBlazorContextMenu();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
@@ -40,6 +43,7 @@ builder.Services.AddOidcAuthentication(options =>
 builder.Services.AddScoped<IAccessTokenProvider, APIJWTTokenProvider>();
 builder.Services.AddScoped<IAuthenticationProvider, BaseBearerTokenAuthenticationProvider>();
 builder.Services.AddScoped<APIJWTTokenProvider>();
+builder.Services.AddScoped<IJsDateInterop, JsDateInterop>();
 
 builder.Services
     .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client =>

@@ -1,0 +1,91 @@
+﻿@page "/gates"
+@inherits PagedTableComponentBase<Gate>
+@using AEBestGatePath.API.Client.Gates.Paged
+@using AEBestGatePath.API.Client.Models
+@using AEBestGatePath.Web.Shared.Tables
+@using AEBestGatePath.Web.Shared.Date
+@using AEBestGatePath.Web.Shared
+@inject AEBestGatePathClient Client
+<h3>Gates</h3>
+
+
+
+<TableUtil @bind-Search="Search" @bind-ItemsPerPage="ItemsPerPage"
+           @bind-Check="ViewOccupied" CheckLabel="Occupied" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
+<PagedTable @ref="Table" @bind-Page="Page" @bind-Asc="Asc" @bind-SortName="Sort" Class="table-hover table-striped" Headers="@_headers" ItemsPerPage="@ItemsPerPage" FetchNewData="@FetchPagedGates">
+    <RowTemplate Context="gate">
+        <RowLink Url="@($"/gate/{gate.Id}")">
+            <td>@gate.Player!.Guild!.Name</td>
+            <td>@gate.Player!.Name</td>
+            <td>@gate.Name</td>
+            <td>@(gate.Occupied!.Value ? "Yes" : "No")</td>
+            <td><AstroLocation Location="gate.Location" /></td>
+            <td>@gate.Location!.GateLevel</td>
+            <td>@gate.Location!.LogiCommander</td>
+            <td><LocalDateTimeDisplay Date="gate.LastUpdated!.Value.DateTime" /></td>
+        </RowLink>
+    </RowTemplate>
+</PagedTable>
+
+@code {
+
+    private bool _viewOccupied;
+    protected override Task OnInitializedAsync()
+    {
+        Sort = "Name";
+        return Task.CompletedTask;
+    }
+    private readonly List<TableHeader<Gate>> _headers =
+    [
+        new() { Name = "Guild", SortPath = "Player.Guild.Name" },
+        new() { Name = "Player Name", SortPath = "Player.Name" },
+        new() { Name = "Name", SortPath = "Name" },
+        new() { Name = "Occupied", SortPath = "Occupied" },
+        new() { Name = "Location", SortPath = "Sort" },
+        new() { Name = "Gate Level", SortPath = "Location.GateLevel" },
+        new() { Name = "Logistics Level", SortPath = "Location.LogiCommander" },
+        new() { Name = "Last Update", SortPath = "LastUpdated" }
+    ];
+
+    private async Task<Paged<Gate>> FetchPagedGates(int page, string sort, bool asc)
+    {
+        try
+        {
+            var paged = await Client.Gates.Paged.GetAsync((config) =>
+            {
+                config.QueryParameters = new PagedRequestBuilder.PagedRequestBuilderGetQueryParameters()
+                {
+                    Page = page,
+                    ItemsPerPage = ItemsPerPage,
+                    Search = Search,
+                    Asc = asc,
+                    Sort = sort,
+                    Occupied = _viewOccupied
+                };
+                
+            });
+            return new()
+            {
+                Count = paged?.Count ?? 0,
+                Items = paged?.Items ?? []
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return new()
+            {
+                Count = 0,
+                Items = new()
+            };
+        }
+    }
+    
+    [Parameter]
+    [SupplyParameterFromQuery(Name = nameof(ViewOccupied))]
+    public bool? ViewOccupied
+    {
+        get => _viewOccupied;
+        set => HandleNewValueWithQuery(value, _viewOccupied, false, nameof(ViewOccupied), x => _viewOccupied = x ?? false);
+    }
+}

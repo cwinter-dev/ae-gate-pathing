@@ -1,0 +1,29 @@
+@using BlazorContextMenu
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<ContextMenuTrigger MenuId="contextMenu" WrapperTag="tr" CssClass="clickable" @onclick="@((args) => args.CtrlKey ? Open("_blank") : Open())">
+    @ChildContent
+</ContextMenuTrigger>
+
+<ContextMenu Id="contextMenu" AutoHideEvent="AutoHideEvent.MouseUp">
+    <Item OnClick="@(async () => await Open())">Open</Item>
+    <Item OnClick="@(async () => await Open("_blank"))">Open in new Tab</Item>
+</ContextMenu>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Url { get; set; }
+
+    private async Task Open(string type = "")
+    {
+        if (type == string.Empty)
+            NavManager.NavigateTo(Url);
+        else
+        {
+            await JS.InvokeVoidAsync("open", Url, type);
+        }
+    }
+}

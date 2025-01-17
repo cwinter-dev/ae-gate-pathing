@@ -9,11 +9,9 @@ namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Gate : IAdditionalDataHolder, IParsable
+    public partial class Gate : IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
-        public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>The id property</summary>
         public Guid? Id { get; set; }
         /// <summary>The lastUpdated property</summary>
@@ -46,13 +44,8 @@ namespace AEBestGatePath.API.Client.Models
 #endif
         /// <summary>The playerId property</summary>
         public Guid? PlayerId { get; set; }
-        /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Gate"/> and sets the default values.
-        /// </summary>
-        public Gate()
-        {
-            AdditionalData = new Dictionary<string, object>();
-        }
+        /// <summary>The sort property</summary>
+        public int? Sort { get; set; }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -78,6 +71,7 @@ namespace AEBestGatePath.API.Client.Models
                 { "occupied", n => { Occupied = n.GetBoolValue(); } },
                 { "player", n => { Player = n.GetObjectValue<global::AEBestGatePath.API.Client.Models.Player>(global::AEBestGatePath.API.Client.Models.Player.CreateFromDiscriminatorValue); } },
                 { "playerId", n => { PlayerId = n.GetGuidValue(); } },
+                { "sort", n => { Sort = n.GetIntValue(); } },
             };
         }
         /// <summary>
@@ -94,7 +88,7 @@ namespace AEBestGatePath.API.Client.Models
             writer.WriteBoolValue("occupied", Occupied);
             writer.WriteObjectValue<global::AEBestGatePath.API.Client.Models.Player>("player", Player);
             writer.WriteGuidValue("playerId", PlayerId);
-            writer.WriteAdditionalData(AdditionalData);
+            writer.WriteIntValue("sort", Sort);
         }
     }
 }

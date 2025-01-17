@@ -1,0 +1,81 @@
+﻿@page "/gate/{id}"
+<h3>Gate</h3>
+@using AEBestGatePath.API.Client.Models
+@using AEBestGatePath.Web.Shared
+@using AEBestGatePath.Web.Shared.Date
+@inject NavigationManager NavManager
+@inject AEBestGatePathClient Client
+
+
+@if (_gate == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="my-5">@_gate.Name @(_gate.Occupied!.Value ? "Occupied" : "")</h1>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label id="gateName">Name</label>
+                    <span class="form-control no-edit" aria-label="ID" aria-describedby="gateName">@_gate.Name</span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label id="gateName">Gate Level (Commander)</label>
+                    <span class="form-control no-edit" aria-label="ID" aria-describedby="gateName">@_gate.Location!.GateLevel (@_gate.Location.LogiCommander)</span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label id="gateLocation">Location</label>
+                    <span class="form-control no-edit" aria-label="ID" aria-describedby="gateLocation"><AstroLocation Location="_gate.Location" /></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label id="Player Name">Player</label>
+                    <a class="form-control no-edit" aria-label="ID" aria-describedby="playerName">@_gate.Player!.Name</a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label id="gateLastUpdate">Last Update</label>
+                    <span class="form-control no-edit" aria-label="ID" aria-describedby="gateLastUpdate"><LocalDateTimeDisplay Date="@_gate.LastUpdated!.Value.DateTime" /></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    public Guid _id;
+
+    private Gate? _gate { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        if (Guid.TryParse(Id, out var id))
+            try
+            {
+                _id = id;
+                _gate = await Client.Gates[_id].GetAsync();
+                InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        else
+            NavManager.NavigateTo("404");
+    }
+}

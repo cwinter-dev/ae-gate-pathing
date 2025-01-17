@@ -1,0 +1,239 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@using Microsoft.AspNetCore.WebUtilities
+@using AEBestGatePath.Web.Shared.Date
+@implements IDisposable
+<div class="container-fluid">
+    <div class="row mb-2 gy-1">
+        @if (Search != null)
+        {
+            <div class="col-xl-6 col-12">
+                <input type="text" class="form-control" placeholder="Search" @bind-value="SearchValue" @bind-value:event="oninput" disabled="@PreventNavigation" style="@(PreventNavigation ? "cursor:not-allowed;" : "")"/>
+            </div>
+        }
+        
+        @if (NumberInputPlaceholder != null)
+        {
+            <div class="col-2">
+                <input type="number" class="form-control" placeholder="@NumberInputPlaceholder" @bind-value="NumberInputValue" @bind-value:event="oninput" disabled="@PreventNavigation" style="@(PreventNavigation ? "cursor:not-allowed;" : "")"/>
+            </div>
+        }
+        
+        @foreach (var dropdown in (Dropdowns ?? new()).Where(dropdown => dropdown.Source()?.Any() ?? false))
+        {
+            <div class="col col-xl-auto">
+                <EditForm Model="@dropdown.Value">
+                    <ComboBox Placeholder="@dropdown.Placeholder" @bind-Value="@dropdown.Value" Id="processTypeInput" BackingList="@dropdown.Source()" disabled="@PreventNavigation" style="@(PreventNavigation ? "cursor:not-allowed;" : "")"></ComboBox>
+                </EditForm>
+            </div>
+        }
+        
+        @if (CheckLabel != null)
+        {
+            <div class="col col-xl-auto align-items-center d-flex">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" @bind="CheckValue" id="check" disabled="@PreventNavigation" style="@(PreventNavigation ? "cursor:not-allowed;" : "")">
+                  <label class="form-check-label" for="check">
+                    @CheckLabel
+                  </label>
+                </div>
+            </div>
+        }
+        <div class="col col-xl-auto">
+            <div class="row">
+                @if (HasStartFilter)
+                {
+                    <div class="col col-xl-auto">
+                        <div class="input-group">
+                            <span id="edit-start" class="input-group-text">Start: </span>
+                            <LocalDateTimeInput @bind-Date="DateRangeStartValue"
+                                                PlaceHolder="Start"
+                                                Label="Start"
+                                                DescribedBy="edit-start" Disabled="@PreventNavigation" Style="@(PreventNavigation ? "cursor:not-allowed;" : "")"></LocalDateTimeInput>
+                        </div>
+                    </div>
+                }
+                @if (HasEndFilter)
+                {
+                    <div class="col col-xl-auto">
+                        <div class="input-group">
+                            <span class="input-group-text">End: </span>
+                            <LocalDateTimeInput @bind-Date="DateRangeEndValue"
+                                                PlaceHolder="End"
+                                                Label="End"
+                                                DescribedBy="edit-end" Disabled="@PreventNavigation" Style="@(PreventNavigation ? "cursor:not-allowed;" : "")"></LocalDateTimeInput>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (ItemsPerPageValue > 0)
+        {
+            <div class="ms-auto col-auto">
+                <select class="form-select" @bind="ItemsPerPageValue" disabled="@PreventNavigation" style="@(PreventNavigation ? "cursor:not-allowed;" : "")">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public bool PreventNavigation { get; set; } = false;
+    [Parameter]
+    public string Search { get; set; }
+    [Parameter]
+    public int? NumberInput { get; set; }
+    [Parameter]
+    public string NumberInputPlaceholder { get; set; }
+    [Parameter]
+    public EventCallback<string> SearchChanged { get; set; }
+    private string SearchValue
+    {
+        get => Search ?? string.Empty;
+        set
+        {
+            SearchChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+    private int? NumberInputValue
+    {
+        get => NumberInput;
+        set
+        {
+            NumberInputChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+    [Parameter]
+    public EventCallback<int?> NumberInputChanged { get; set; }
+
+    [Parameter]
+    public List<Dropdown> Dropdowns { get; set; } = new();
+    [Parameter]
+    public EventCallback<List<Dropdown>> DropdownsChanged { get; set; }
+    
+    
+    [Parameter]
+    public bool? Check { get; set; }
+    [Parameter]
+    public string CheckLabel { get; set; }
+    [Parameter]
+    public EventCallback<bool?> CheckChanged { get; set; }
+    private bool? CheckValue
+    {
+        get => Check;
+        set
+        {
+            CheckChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+
+    [Parameter]
+    public DateTime DateRangeStart { get; set; } = DateTime.MinValue;
+    [Parameter]
+    public bool HasStartFilter { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> DateRangeStartChanged { get; set; }
+    private DateTime DateRangeStartValue
+    {
+        get => DateRangeStart;
+        set
+        {
+            DateRangeStartChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+
+    [Parameter]
+    public DateTime DateRangeEnd { get; set; } = DateTime.MinValue;
+    [Parameter]
+    public bool HasEndFilter { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> DateRangeEndChanged { get; set; }
+    private DateTime DateRangeEndValue
+    {
+        get => DateRangeEnd;
+        set
+        {
+            DateRangeEndChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+
+    [Parameter]
+    public int ItemsPerPage { get; set; }
+    [Parameter]
+    public EventCallback<int> ItemsPerPageChanged { get; set; }
+    private int ItemsPerPageValue
+    {
+        get => ItemsPerPage;
+        set
+        {
+            if (value == ItemsPerPage) return;
+            ItemsPerPageChanged.InvokeAsync(value).ContinueWith(async _ => await NotifyChanged());
+        }
+    }
+
+    [Parameter]
+    public Func<Task> NotifyChanged { get; set; } = () => Task.FromResult(false);
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        var dict = parameters.ToDictionary();
+        if (dict.ContainsKey(nameof(DateRangeStart)))
+            HasStartFilter = true;
+        if (dict.ContainsKey(nameof(DateRangeEnd)))
+            HasEndFilter = true;
+        
+        
+        if (dict.ContainsKey(nameof(Dropdowns)))
+            foreach (var dropdown in dict[nameof(Dropdowns)] as List<Dropdown> ?? new())
+            {
+                dropdown.NotifyChange = () => DropdownsChanged.InvokeAsync(Dropdowns).ContinueWith(async _ => await NotifyChanged());
+            }
+
+        return base.SetParametersAsync(parameters);
+    }
+
+    public class Dropdown
+    {
+        public string Value
+        {
+            get => GetValue() ?? string.Empty;
+            set
+            {
+                SetValue(value);
+                NotifyChange();
+            }
+        }
+
+        public string Name = "";
+
+        public Func<string> GetValue = () => string.Empty;
+        public Action<string> SetValue = s => { };
+
+        public Action NotifyChange = () => {};
+
+        public Func<Dictionary<string, string>> Source { get; set; }
+        public string Placeholder { get; set; }
+    }
+
+    private void NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        var query = QueryHelpers.ParseQuery(new Uri(e.Location).Query);
+        // if (query.ContainsKey("BatchNumber") && query["BatchNumber"] != _batchNumber)
+        // {
+        //     _batchNumber = query["BatchNumber"];
+        //     LoadBatchData(_batchNumber);
+        // }
+    }
+    
+    void IDisposable.Dispose() => NavManager.LocationChanged -= NavigationManager_LocationChanged;
+    // Query String, push state
+    private Dictionary<string, string> _query;
+
+}

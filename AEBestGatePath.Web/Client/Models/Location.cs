@@ -9,11 +9,9 @@ namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Location : IAdditionalDataHolder, IParsable
+    public partial class Location : IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
-        public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>The cluster property</summary>
         public int? Cluster { get; set; }
         /// <summary>The galaxy property</summary>
@@ -42,13 +40,6 @@ namespace AEBestGatePath.API.Client.Models
         public int? SystemX { get; set; }
         /// <summary>The systemY property</summary>
         public int? SystemY { get; set; }
-        /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Location"/> and sets the default values.
-        /// </summary>
-        public Location()
-        {
-            AdditionalData = new Dictionary<string, object>();
-        }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -98,7 +89,6 @@ namespace AEBestGatePath.API.Client.Models
             writer.WriteStringValue("server", Server);
             writer.WriteIntValue("systemX", SystemX);
             writer.WriteIntValue("systemY", SystemY);
-            writer.WriteAdditionalData(AdditionalData);
         }
     }
 }

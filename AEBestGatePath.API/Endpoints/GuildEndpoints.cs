@@ -13,11 +13,12 @@ public static class GuildEndpoints
         group.MapGet("/", async (AstroEmpiresContext db) =>
             await db.Guilds.ToListAsync());
         
-        group.MapGet("/{id:int}", async (int id, AstroEmpiresContext db) =>
+        group.MapGet("/{id:guid}", async (Guid id, AstroEmpiresContext db) =>
             await db.Guilds.FindAsync(id)
                 is { } guild
                 ? Results.Ok(guild)
-                : Results.NotFound());
+                : Results.NotFound())
+            .Produces<Guild>();
 
         group.MapPost("/", async (Guild guild, AstroEmpiresContext db) =>
         {

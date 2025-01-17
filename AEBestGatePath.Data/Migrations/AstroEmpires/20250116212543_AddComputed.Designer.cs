@@ -4,26 +4,29 @@ using System.Collections.Generic;
 using AEBestGatePath.Data.AstroEmpires.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AEBestGatePath.Data.Migrations
+namespace AEBestGatePath.Data.Migrations.AstroEmpires
 {
     [DbContext(typeof(AstroEmpiresContext))]
-    partial class AstroEmpiresContextModelSnapshot : ModelSnapshot
+    [Migration("20250116212543_AddComputed")]
+    partial class AddComputed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Gate", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Gate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +47,12 @@ namespace AEBestGatePath.Data.Migrations
                     b.Property<Guid>("PlayerId")
                         .HasColumnType("uuid");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Location", "AEBestGatePath.Data.Entities.Gate.Location#Location", b1 =>
+                    b.Property<int>("Sort")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("integer")
+                        .HasComputedColumnSql("\"Location_RingPosition\" + \"Location_Ring\" * 10 + \"Location_SystemX\" * 10^2 + \"Location_SystemY\" * 10^3 + \"Location_RegionX\" * 10^4 + \"Location_RegionY\" * 10^5 + \"Location_Galaxy\" * 10^6 + \"Location_Cluster\" * 10^7", true);
+
+                    b.ComplexProperty<Dictionary<string, object>>("Location", "AEBestGatePath.Data.AstroEmpires.Entities.Gate.Location#Location", b1 =>
                         {
                             b1.IsRequired();
 
@@ -91,7 +99,7 @@ namespace AEBestGatePath.Data.Migrations
                     b.ToTable("Gates");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Guild", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Guild", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +134,7 @@ namespace AEBestGatePath.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Player", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Player", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -152,13 +160,11 @@ namespace AEBestGatePath.Data.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Seed", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Seed", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -172,13 +178,13 @@ namespace AEBestGatePath.Data.Migrations
                     b.ToTable("SeedData");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Gate", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Gate", b =>
                 {
-                    b.HasOne("AEBestGatePath.Data.Entities.Guild", null)
+                    b.HasOne("AEBestGatePath.Data.AstroEmpires.Entities.Guild", null)
                         .WithMany("Players")
                         .HasForeignKey("GuildId");
 
-                    b.HasOne("AEBestGatePath.Data.Entities.Player", "Player")
+                    b.HasOne("AEBestGatePath.Data.AstroEmpires.Entities.Player", "Player")
                         .WithMany("Gates")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -187,21 +193,21 @@ namespace AEBestGatePath.Data.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Player", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Player", b =>
                 {
-                    b.HasOne("AEBestGatePath.Data.Entities.Guild", "Guild")
+                    b.HasOne("AEBestGatePath.Data.AstroEmpires.Entities.Guild", "Guild")
                         .WithMany()
                         .HasForeignKey("GuildId");
 
                     b.Navigation("Guild");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Guild", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Guild", b =>
                 {
                     b.Navigation("Players");
                 });
 
-            modelBuilder.Entity("AEBestGatePath.Data.Entities.Player", b =>
+            modelBuilder.Entity("AEBestGatePath.Data.AstroEmpires.Entities.Player", b =>
                 {
                     b.Navigation("Gates");
                 });

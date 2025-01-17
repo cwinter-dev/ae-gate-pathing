@@ -13,11 +13,12 @@ public static class PlayerEndpoints
         group.MapGet("/", async (AstroEmpiresContext db) =>
             await db.Players.ToListAsync());
         
-        group.MapGet("/{id:int}", async (int id, AstroEmpiresContext db) =>
+        group.MapGet("/{id:guid}", async (Guid id, AstroEmpiresContext db) =>
             await db.Players.FindAsync(id)
                 is { } player
                 ? Results.Ok(player)
-                : Results.NotFound());
+                : Results.NotFound())
+            .Produces<Player>();
 
         group.MapPost("/", async (Player player, AstroEmpiresContext db) =>
         {

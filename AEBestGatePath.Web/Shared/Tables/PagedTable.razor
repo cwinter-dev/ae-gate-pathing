@@ -1,0 +1,279 @@
+﻿@using System.Diagnostics.CodeAnalysis
+@using System.Linq.Expressions
+@using System.Collections.ObjectModel
+@typeparam TItem
+@inject IJSRuntime JS
+
+@if (!_initialized || _loading)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table @Class">
+        <thead>
+        <tr>
+            @foreach (var h in Headers)
+            {
+                <th scope="col" class="align-middle">
+                    <div class="row justify-content-between align-items-center flex-nowrap">
+                        <div class="col-auto"><span data-bs-toggle="@(string.IsNullOrWhiteSpace(h.Title) ? "" : "tooltip")" title="@h.Title">@h.Name</span></div>
+                        @if (h.Sort != null || !string.IsNullOrWhiteSpace(h.SortPath))
+                        {
+                            <div class="col-auto">
+                                <div class="d-flex-inline justify-content align-items-center">
+                                    <div class="col-12">
+                                        <a @onclick="@(() => Sort(h))" role="button"
+                                           class="@(SortDisplay == GetSortName(h) ? "invisible disabled" : "")"
+                                           disabled=@(SortDisplay == GetSortName(h))>
+                                            <i class="bi bi-caret-up-fill"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <a @onclick="@(() => Sort(h, false))" role="button"
+                                           class="@(SortDisplay == GetSortName(h, false) ? "invisible disabled" : "")"
+                                           disabled=@(SortDisplay == GetSortName(h, false))>
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in (_serverProcessing ? _fetchedItems.Items : PagedList))
+        {
+            if (RowTemplate is not null)
+            {
+            @* th is not here to allow for clickable rows *@
+                @RowTemplate(item)
+            }
+        }
+        </tbody>
+    </table>
+    @if (ItemsPerPage > 0 && Pages > 1)
+    {
+        <nav aria-label="Table Navigation" class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center">
+                
+                <div class="col-auto">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(PageValue == 1 || PreventNavigation ? "disabled unclickable" : "clickable")">
+                            <a class="page-link" aria-label="Previous" @onclick="@(() => { if (!PreventNavigation) --PageValue; })" disabled="@PreventNavigation">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link @(PageValue == 1 ? "active" : "") @(PreventNavigation ? "unclickable" : "clickable")" @onclick="@(() => { if (!PreventNavigation) PageValue = 1; })" disabled="@PreventNavigation">1</a></li>
+                        @if (PageValue >= 6)
+                        {
+                            <li class="page-item disabled"><a class="page-link" style="border-top: none;border-bottom: none;">...</a></li>
+                        }
+                        else
+                        {
+                            <li class="page-item"><a class="page-link @(PageValue == 2 ? "active" : "") @(PreventNavigation ? "unclickable" : "clickable")" @onclick="@(() => { if (!PreventNavigation) PageValue = 2; })" disabled="@PreventNavigation">2</a></li>
+                        }
+                        @for (var i = Math.Max(3, PageValue - 2); i <= Math.Min(PageValue + 2, Pages - 2); i++)
+                        {
+                            @* Capture local var i *@
+                            var localPage = i;
+                            <li class="page-item"><a class="page-link @(PageValue == i ? "active" : "") @(PreventNavigation ? "unclickable" : "clickable")" @onclick="@(() => { if (!PreventNavigation) PageValue = localPage; })" disabled="@PreventNavigation">@i</a></li>
+                        }
+                        @if (PageValue + 3 < Pages)
+                        {
+                            <li class="page-item disabled"><a class="page-link" style="border-top: none;border-bottom: none;">...</a></li>
+                        }
+                        else if (Pages > 3)
+                        {
+                            <li class="page-item"><a class="page-link @(PageValue == Pages - 1 ? "active" : "") @(PreventNavigation ? "unclickable" : "clickable")" @onclick="@(() => { if (!PreventNavigation) PageValue = Pages - 1; })" disabled="@PreventNavigation">@(Pages - 1)</a></li>
+                        }
+                        @if (Pages > 2)
+                        {
+                            <li class="page-item"><a class="page-link @(PageValue == Pages ? "active" : "") @(PreventNavigation ? "unclickable" : "clickable")" @onclick="@(() => { if (!PreventNavigation) PageValue = Pages; })" disabled="@PreventNavigation">@Pages</a></li>
+                        }
+                        <li class="page-item @(PageValue == Pages || PreventNavigation ? "disabled unclickable" : "clickable")">
+                            <a class="page-link" aria-label="Next" @onclick="@(() => { if (!PreventNavigation) ++PageValue; })">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-3">
+                    <div class="input-group ms-3" style="max-width: 140px;">
+                        <span class="input-group-text" id="gotoPage">Go to:</span>
+                        <input type="number" class="form-control @(PreventNavigation ? "disabled" : "")" disabled="@PreventNavigation" placeholder="Page" aria-label="Page" aria-describedby="gotoPage" @bind="_gotoPage" @onkeydown="@(c => { if (!PreventNavigation && c.Code == "Enter") PageValue = _gotoPage; })">
+                    </div>
+                </div>
+            </div>
+        </nav>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public bool PreventNavigation { get; set; } = false;
+    
+    [Parameter]
+    public List<TableHeader<TItem>> Headers { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem>? RowTemplate { get; set; }
+
+    [Parameter, AllowNull]
+    public IReadOnlyList<TItem> Items { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public List<Expression<Func<TItem, bool>>> Filters { get; set; } = new();
+
+    [Parameter]
+    public int ItemsPerPage { get; set; }
+
+    [Parameter]
+    public Func<int, string, bool, Task<Paged<TItem>>> FetchNewData { get; set; }
+    
+    [Parameter]
+    public string Class { get; set; }
+
+    
+    public ReadOnlyCollection<TItem> ListItems => (_serverProcessing ? _fetchedItems.Items : PagedList).ToList().AsReadOnly();
+
+    private Paged<TItem> _fetchedItems;
+    private bool _serverProcessing;
+    [Parameter]
+    public string SortName {
+        get => _activeSort?.Name;
+        set
+        {
+            if (_activeSort?.Name == value) return;
+            var sort = Headers.FirstOrDefault(x => x.Name == value);
+            if (sort != null)
+                _activeSort = sort;
+        }
+    }
+    [Parameter]
+    public EventCallback<string> SortNameChanged { get; set; }
+    private TableHeader<TItem> _activeSort;
+    [Parameter]
+    public bool? Asc { get; set; }
+    [Parameter]
+    public EventCallback<bool?> AscChanged { get; set; }
+    [Parameter]
+    public int Page { get; set; }
+    private bool _initialized;
+    
+    private int PageValue
+    {
+        get => Page;
+        set
+        {
+            if (value == Page) return;
+            PageChanged.InvokeAsync(value).ContinueWith(async _ =>
+            {
+                if (_serverProcessing)
+                    await Fetch();
+            });
+        }
+    }
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+    
+
+    private int Pages
+    {
+        get
+        {
+            var maxPages = Math.Max(1, (int)Math.Ceiling((_serverProcessing ? _fetchedItems?.Count ?? 0 : FilteredList.Count()) / (decimal)ItemsPerPage));
+            if (PageValue <= maxPages) return maxPages;
+            PageValue = maxPages;
+            InvokeAsync(StateHasChanged);
+            return maxPages;
+        }
+    }
+
+    public long Count => _serverProcessing ? _fetchedItems?.Count ?? 0 : FilteredList.Count();
+
+    private bool _loading;
+    private bool _queued;
+    internal async Task Fetch()
+    {
+        if (!_serverProcessing) return;
+        if (_loading)
+        {
+            _queued = true;
+            return;
+        }
+        do
+        {
+            _loading = true;
+            _queued = false;
+            _fetchedItems = await FetchNewData(Page, _activeSort?.SortPath, Asc ?? true);
+            _loading = false;
+        }
+        while (_queued);
+        await InvokeAsync(StateHasChanged);
+        
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (FetchNewData != null)
+            {
+                _serverProcessing = true;
+                Fetch();
+            }
+            else
+            {
+                _serverProcessing = false;
+            }
+            _initialized = true;
+            await InvokeAsync(StateHasChanged);
+        }
+        if (Headers.Any(x => !string.IsNullOrWhiteSpace(x.Title)))
+            await JS.InvokeVoidAsync("addTooltips");
+    }
+    
+    
+    private IEnumerable<TItem> FilteredList
+    {
+        get
+        {
+            return Filters.Aggregate<Expression<Func<TItem, bool>>, IEnumerable<TItem>>(Items, (current, filter) => current.Where(filter.Compile()));
+        }
+    }
+
+    private IEnumerable<TItem> OrderedList => _activeSort != null ? Asc ?? true ? FilteredList.OrderBy(_activeSort.Sort) : FilteredList.OrderByDescending(_activeSort.Sort) : FilteredList;
+
+    private IEnumerable<TItem> PagedList => ItemsPerPage > 0 ? OrderedList.Skip(Math.Min(FilteredList.Count(), (PageValue - 1) * ItemsPerPage)).Take(Math.Min(ItemsPerPage, FilteredList.Count() - (PageValue - 1) * ItemsPerPage)) : OrderedList;
+
+
+    private async Task Sort(TableHeader<TItem> header, bool asc = true)
+    {
+        // this is inefficiency, but manageable
+        //_activeSort = header;
+        await SortNameChanged.InvokeAsync(header.Name);
+        await AscChanged.InvokeAsync(asc);
+        await Fetch();
+    }
+
+    private string SortDisplay => GetSortName(_activeSort, Asc ?? true);
+        //maybe handle tabs / line breaks
+
+    private static string GetSortName(TableHeader<TItem> header, bool asc = true)
+    {
+        return $"{header?.Name.Replace(' ', '-')}-{(asc ? "asc" : "desc")}";
+    }
+
+    private int _gotoPage;
+}

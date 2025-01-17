@@ -55,11 +55,6 @@ namespace AEBestGatePath.API.Client
             ApiClientBuilder.RegisterDefaultDeserializer<JsonParseNodeFactory>();
             ApiClientBuilder.RegisterDefaultDeserializer<TextParseNodeFactory>();
             ApiClientBuilder.RegisterDefaultDeserializer<FormParseNodeFactory>();
-            if (string.IsNullOrEmpty(RequestAdapter.BaseUrl))
-            {
-                RequestAdapter.BaseUrl = "http://localhost:50420";
-            }
-            PathParameters.TryAdd("baseurl", RequestAdapter.BaseUrl);
         }
     }
 }

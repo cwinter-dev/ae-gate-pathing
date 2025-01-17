@@ -1,40 +1,77 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">AEBestGatePath.Web</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+﻿@using System.Reflection
+@using Microsoft.Extensions.Configuration
+@using System.Globalization
+@using System.Threading
+@inject IConfiguration Configuration
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<div class="flex-shrink-0 p-3 bg-white" style="width: 250px;">
+    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+        <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-5 fw-semibold">AE Tools</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+        <li class="mb-1">
+            <NavLink class="btn rounded position-relative" Match="NavLinkMatch.Prefix" href="/gates">Gates&nbsp;
+                @if (_outdatedAstros > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @_outdatedAstros
+                        <span class="visually-hidden">outdated astros</span>
+                    </span>
+                }
+            </NavLink>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#route-collapse" aria-expanded="true">
+                Route Planner
+            </button>
+            <div class="collapse show" id="route-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><NavLink Match="NavLinkMatch.Prefix" href="/routeplanner" class="link-dark rounded">Route Planner</NavLink></li>
+                    <li><NavLink Match="NavLinkMatch.Prefix" href="/gates" class="link-dark rounded">Gates</NavLink></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <NavLink class="btn rounded" Match="NavLinkMatch.Prefix" href="/players">Players</NavLink>
+        </li>
+        <li class="mb-1">
+            <NavLink class="btn rounded" Match="NavLinkMatch.Prefix" href="/guilds">Guilds</NavLink>
+        </li>
+    </ul>
 </div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="routeplanner">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Route Planner
-            </NavLink>
-        </div>
-    </nav>
+<div class="mt-auto ms-1 mb-1">
+    <a href="https://ko-fi.com/followingciara">buy me a coffee</a>
 </div>
 
 @code {
-    private bool _collapseNavMenu = true;
 
-    private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
+    private int _outdatedAstros = 0;
+    private Timer _timer;
 
-    private void ToggleNavMenu()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _collapseNavMenu = !_collapseNavMenu;
+        if (firstRender)
+        {
+            _timer ??= new Timer(_ =>
+            {
+                try
+                {
+                    var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
+                    var user = authState.User;
+
+                    if (user.Identity?.IsAuthenticated != true) return;
+                    //TODO: add outdated count
+                    _outdatedAstros = 0;
+                    InvokeAsync(StateHasChanged);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }, null, (long)0, 5000);
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
 }

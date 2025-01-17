@@ -9,11 +9,9 @@ namespace AEBestGatePath.API.Client.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Guild : IAdditionalDataHolder, IParsable
+    public partial class Guild : IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
-        public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>The gameId property</summary>
         public int? GameId { get; set; }
         /// <summary>The id property</summary>
@@ -29,18 +27,11 @@ namespace AEBestGatePath.API.Client.Models
         /// <summary>The players property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public UntypedNode? Players { get; set; }
+        public List<global::AEBestGatePath.API.Client.Models.Gate>? Players { get; set; }
 #nullable restore
 #else
-        public UntypedNode Players { get; set; }
+        public List<global::AEBestGatePath.API.Client.Models.Gate> Players { get; set; }
 #endif
-        /// <summary>
-        /// Instantiates a new <see cref="global::AEBestGatePath.API.Client.Models.Guild"/> and sets the default values.
-        /// </summary>
-        public Guild()
-        {
-            AdditionalData = new Dictionary<string, object>();
-        }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -62,7 +53,7 @@ namespace AEBestGatePath.API.Client.Models
                 { "gameId", n => { GameId = n.GetIntValue(); } },
                 { "id", n => { Id = n.GetGuidValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "players", n => { Players = n.GetObjectValue<UntypedNode>(UntypedNode.CreateFromDiscriminatorValue); } },
+                { "players", n => { Players = n.GetCollectionOfObjectValues<global::AEBestGatePath.API.Client.Models.Gate>(global::AEBestGatePath.API.Client.Models.Gate.CreateFromDiscriminatorValue)?.AsList(); } },
             };
         }
         /// <summary>
@@ -75,8 +66,7 @@ namespace AEBestGatePath.API.Client.Models
             writer.WriteIntValue("gameId", GameId);
             writer.WriteGuidValue("id", Id);
             writer.WriteStringValue("name", Name);
-            writer.WriteObjectValue<UntypedNode>("players", Players);
-            writer.WriteAdditionalData(AdditionalData);
+            writer.WriteCollectionOfObjectValues<global::AEBestGatePath.API.Client.Models.Gate>("players", Players);
         }
     }
 }
