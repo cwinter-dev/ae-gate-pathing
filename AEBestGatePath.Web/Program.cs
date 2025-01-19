@@ -5,7 +5,6 @@ using AEBestGatePath.Web;
 using AEBestGatePath.Web.Auth;
 using AEBestGatePath.Web.Shared.Date;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
@@ -19,9 +18,12 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddBlazorContextMenu();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+
+// TODO: https://github.com/TDMR87/BlazorOAuth/tree/main
 builder.Services.AddOidcAuthentication(options =>
 {
     options.ProviderOptions.Authority = "https://accounts.google.com/";
@@ -40,9 +42,9 @@ builder.Services.AddOidcAuthentication(options =>
 .AddAccountClaimsPrincipalFactory<RemoteAuthenticationState, RemoteUserAccount, CustomAccountFactory>();;
 
 // Add the Kiota Client.
-builder.Services.AddScoped<IAccessTokenProvider, APIJWTTokenProvider>();
+builder.Services.AddSingleton<IAccessTokenProvider, APIJWTTokenProvider>();
 builder.Services.AddScoped<IAuthenticationProvider, BaseBearerTokenAuthenticationProvider>();
-builder.Services.AddScoped<APIJWTTokenProvider>();
+builder.Services.AddSingleton<APIJWTTokenProvider>();
 builder.Services.AddScoped<IJsDateInterop, JsDateInterop>();
 
 builder.Services

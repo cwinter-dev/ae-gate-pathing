@@ -1,6 +1,8 @@
 ﻿using AEBestGatePath.Core;
+using AEBestGatePath.Core.Parsers;
 using AEBestGatePath.Data.AstroEmpires.Context;
 using AEBestGatePath.Data.AstroEmpires.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AEBestGatePath.API.Endpoints;
@@ -48,6 +50,56 @@ public static class GateEndpoints
             return Results.Created($"/gates/{gate.Id}", gate);
         }).RequireAuthorization("admin");
 
+
+        group.MapPost("/paste", async ([FromBody] string paste, AstroEmpiresContext db) =>
+        {
+            var parsed = BaseParser.ParseBasePaste(paste);
+            var player = db.Players.FirstOrDefault(x => x.Name == parsed.PlayerName);
+            if (player == null)
+                return Results.NotFound($"Player {parsed.PlayerName} not found");
+            var location = Location.FromAstro(parsed.Astro);
+
+            var existingGate = db.Gates.Include(x => x.Player).FirstOrDefault(x =>
+                x.Location.Server == location.Server &&
+                x.Location.Cluster == location.Cluster &&
+                x.Location.Galaxy == location.GateLevel &&
+                x.Location.RegionX == location.RegionX &&
+                x.Location.RegionY == location.RegionY &&
+                x.Location.SystemX == location.SystemX &&
+                x.Location.SystemY == location.SystemY &&
+                x.Location.Ring == location.Ring &&
+                x.Location.RingPosition == location.RingPosition);
+
+            if (existingGate == null)
+            {
+
+                var gate = new Gate
+                {
+                    Player = player,
+                    PlayerId = player.Id,
+                    LastUpdated = DateTime.UtcNow - parsed.LastSeen,
+                    Occupied = parsed.Occupied,
+                    Location = location,
+                    Name = parsed.BaseName
+                };
+                db.Gates.Add(gate);
+                await db.SaveChangesAsync();
+
+                return Results.Created($"/gates/{gate.Id}", gate);
+            }
+
+            existingGate.Occupied = parsed.Occupied;
+            existingGate.LastUpdated = DateTime.UtcNow - parsed.LastSeen;
+            existingGate.Player = player;
+            existingGate.PlayerId = player.Id;
+            existingGate.Name = parsed.BaseName;
+            existingGate.Location = location;
+            await db.SaveChangesAsync();
+            
+            return Results.NoContent();
+            
+        }).Produces<Gate?>().RequireAuthorization("admin");
+        
         group.MapPut("/{id:int}", async (int id, Gate inputGate, AstroEmpiresContext db) =>
         {
             var gate = await db.Gates.FindAsync(id);

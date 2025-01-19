@@ -35,6 +35,7 @@ namespace AEBestGatePath.Web.Auth
                         Uid = initialUser.Claims.Where(x => x.Type == "sub").Select(x => x.Value).FirstOrDefault(),
                         Name = initialUser.Claims.Where(x => x.Type == "name").Select(x => x.Value).FirstOrDefault(),
                     };
+                    Console.WriteLine("calling register");
  
                     var response = await _appAuthClient.Accounts.RegisterGoogleUser.PostAsync(googleUser);
                     if (response is { JwtToken: not null })
@@ -42,7 +43,7 @@ namespace AEBestGatePath.Web.Auth
                         ((ClaimsIdentity)initialUser.Identity).AddClaim(
                             new Claim("APIjwt", response.JwtToken)
                         );
-                        _apijwtTokenProvider.AccessToken = response.JwtToken;
+                        (_apijwtTokenProvider as APIJWTTokenProvider).AccessToken = response.JwtToken;
                     }
 
                 }

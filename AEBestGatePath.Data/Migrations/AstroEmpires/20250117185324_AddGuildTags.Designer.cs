@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AEBestGatePath.Data.AstroEmpires.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AEBestGatePath.Data.Migrations.AstroEmpires
 {
     [DbContext(typeof(AstroEmpiresContext))]
-    partial class AstroEmpiresContextModelSnapshot : ModelSnapshot
+    [Migration("20250117185324_AddGuildTags")]
+    partial class AddGuildTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

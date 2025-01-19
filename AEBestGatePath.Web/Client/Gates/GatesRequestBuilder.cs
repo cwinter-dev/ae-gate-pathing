@@ -2,6 +2,7 @@
 #pragma warning disable CS0618
 using AEBestGatePath.API.Client.Gates.Item;
 using AEBestGatePath.API.Client.Gates.Paged;
+using AEBestGatePath.API.Client.Gates.Paste;
 using AEBestGatePath.API.Client.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -23,6 +24,11 @@ namespace AEBestGatePath.API.Client.Gates
         public global::AEBestGatePath.API.Client.Gates.Paged.PagedRequestBuilder Paged
         {
             get => new global::AEBestGatePath.API.Client.Gates.Paged.PagedRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The paste property</summary>
+        public global::AEBestGatePath.API.Client.Gates.Paste.PasteRequestBuilder Paste
+        {
+            get => new global::AEBestGatePath.API.Client.Gates.Paste.PasteRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>Gets an item from the AEBestGatePath.API.Client.gates.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>

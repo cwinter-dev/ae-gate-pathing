@@ -5,7 +5,9 @@
 @using AEBestGatePath.Web.Shared.Date
 @inject NavigationManager NavManager
 @inject AEBestGatePathClient Client
+@inject IJSRuntime JS
 
+<div class="container">
 
 @if (_gate == null)
 {
@@ -13,7 +15,6 @@
 }
 else
 {
-    <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="my-5">@_gate.Name @(_gate.Occupied!.Value ? "Occupied" : "")</h1>
         </div>
@@ -49,8 +50,13 @@ else
                 </div>
             </div>
         </div>
-    </div>
 }
+    <div class="row">
+        <div class="col">
+            <textarea class="form-control" @ref="_inputRef" rows="3"></textarea>
+        </div>
+    </div>
+</div>
 
 @code {
 
@@ -58,12 +64,20 @@ else
     public string Id { get; set; }
 
     public Guid _id;
-
+    
+    private ElementReference _inputRef;
     private Gate? _gate { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+        
+        var module = await JS.InvokeAsync<IJSObjectReference>(
+            "import", "./js/pasteInteropHelper.js");
+
+        var selfReference = DotNetObjectReference.Create(this);
+        
+        await module.InvokeVoidAsync("addOnPasteEventListener", _inputRef, selfReference);
         if (Guid.TryParse(Id, out var id))
             try
             {
@@ -78,4 +92,14 @@ else
         else
             NavManager.NavigateTo("404");
     }
+    
+
+    [JSInvokable]
+    public async Task HandlePaste(string text)
+    {
+        await Client.Gates.Paste.PostAsync(text);
+        _gate = await Client.Gates[_id].GetAsync();
+        InvokeAsync(StateHasChanged);
+    }
+    
 }

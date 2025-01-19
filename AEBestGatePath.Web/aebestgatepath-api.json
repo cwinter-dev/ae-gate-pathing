@@ -197,6 +197,35 @@
         }
       }
     },
+    "/gates/paste": {
+      "post": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Gate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/route/{origin}/{destination}": {
       "get": {
         "tags": [
@@ -559,6 +588,12 @@
             "format": "uuid"
           },
           "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "tag": {
+            "maxLength": 5,
+            "minLength": 0,
             "type": "string",
             "nullable": true
           },

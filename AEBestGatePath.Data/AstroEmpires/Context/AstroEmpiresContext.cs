@@ -49,18 +49,17 @@ public class AstroEmpiresContext : DbContext
                     if (!appliedSeeds.Contains(initialPlayersRawQuad))
                     {
                         var bases =
-                            BaseListParser.ParseFromBaseReport(
-                                File.ReadAllText(initialBasesRawQuad));
-                        var pNames = bases.Select(y => y.playerName).Distinct();
+                            BaseParser.ParseListFromBaseReport(File.ReadAllText(initialBasesRawQuad));
+                        var pNames = bases.Select(y => y.PlayerName).Distinct();
                         var basePlayerMap =
                             context.Set<Player>().Where(x => pNames.Contains(x.Name))
                                 .ToList().ToDictionary(x => x.Name, x => x.Id);
                         context.Set<Gate>().AddRange(bases.Select(x => new Gate
                         {
                             LastUpdated = DateTime.UtcNow,
-                            Location = Location.FromAstro(x.astro),
-                            Name = x.baseName,
-                            PlayerId = basePlayerMap[x.playerName]
+                            Location = Location.FromAstro(x.Astro),
+                            Name = x.BaseName,
+                            PlayerId = basePlayerMap[x.PlayerName]
                         }));
                         context.Set<Seed>().Add(new Seed { Name = initialBasesRawQuad });
                         context.SaveChanges();
@@ -100,18 +99,17 @@ public class AstroEmpiresContext : DbContext
                     if (!appliedSeeds.Contains(initialPlayersRawQuad))
                     {
                         var bases =
-                            BaseListParser.ParseFromBaseReport(
-                                await File.ReadAllTextAsync(initialBasesRawQuad, cancellationToken));
-                        var pNames = bases.Select(y => y.playerName).Distinct();
+                            BaseParser.ParseListFromBaseReport(await File.ReadAllTextAsync(initialBasesRawQuad, cancellationToken));
+                        var pNames = bases.Select(y => y.PlayerName).Distinct();
                         var basePlayerMap =
                             (await context.Set<Player>().Where(x => pNames.Contains(x.Name))
                                 .ToListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Name, x => x.Id);
                         await context.Set<Gate>().AddRangeAsync(bases.Select(x => new Gate
                         {
                             LastUpdated = DateTime.UtcNow,
-                            Location = Location.FromAstro(x.astro),
-                            Name = x.baseName,
-                            PlayerId = basePlayerMap[x.playerName]
+                            Location = Location.FromAstro(x.Astro),
+                            Name = x.BaseName,
+                            PlayerId = basePlayerMap[x.PlayerName]
                         }), cancellationToken);
                         await context.Set<Seed>().AddAsync(new Seed { Name = initialBasesRawQuad }, cancellationToken);
                         await context.SaveChangesAsync(cancellationToken);
@@ -142,9 +140,9 @@ public class AstroEmpiresContext : DbContext
         modelBuilder.Entity<Guild>().HasData(
             new Guild
             {
-                Id = new Guid("b70b6921-9ee7-4cba-914f-c4bc619dc4b2"), Name = "actually four guilds", GameId = 12530
+                Id = new Guid("b70b6921-9ee7-4cba-914f-c4bc619dc4b2"), Tag = "QUAD", Name = "actually four guilds", GameId = 12530
             },
-            new Guild { Id = new Guid("17f9eba5-63bf-4ad0-9415-70b6e482fd7a"), Name = "CRUEL", GameId = 6469 });
+            new Guild { Id = new Guid("17f9eba5-63bf-4ad0-9415-70b6e482fd7a"), Tag = "CRUEL", Name = "CRUEL", GameId = 6469 });
 
 
         base.OnModelCreating(modelBuilder);

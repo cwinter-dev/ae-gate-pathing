@@ -26,18 +26,17 @@ Location
 [QUAD] Khirkre	01	A00:23:55:31
 [QUAD] Khirkre	02	A00:23:55:32";
         
-        var playerList = BaseListParser.ParseFromBaseReport(parseSlice);
-        
+        var playerList = BaseParser.ParseListFromBaseReport(parseSlice);
         Assert.NotEmpty(playerList);
         Assert.Equal(playerList, [
-	        ("Phoenix Hawk", "Dustball Station", new Astro("A00:04:92:11")),
-	        ("Sir Heiko", "Lunar III", new Astro("A00:05:45:10")),
-	        ("Sir Heiko", "Moondew", new Astro("A00:15:43:11")),
-	        ("Sir Heiko", "Lunar IX", new Astro("A00:15:50:10")),
-	        ("Phoenix Hawk", "Newport Station", new Astro("A00:15:50:12")),
-	        ("Cyndara", "Base 10", new Astro("A00:22:84:21")),
-	        ("Khirkre", "01", new Astro("A00:23:55:31")),
-	        ("Khirkre", "02", new Astro("A00:23:55:32"))
+	        new BaseParser.ParsedBase("Phoenix Hawk", "Dustball Station", new Astro("A00:04:92:11")),
+	        new BaseParser.ParsedBase("Sir Heiko", "Lunar III", new Astro("A00:05:45:10")),
+	        new BaseParser.ParsedBase("Sir Heiko", "Moondew", new Astro("A00:15:43:11")),
+	        new BaseParser.ParsedBase("Sir Heiko", "Lunar IX", new Astro("A00:15:50:10")),
+	        new BaseParser.ParsedBase("Phoenix Hawk", "Newport Station", new Astro("A00:15:50:12")),
+	        new BaseParser.ParsedBase("Cyndara", "Base 10", new Astro("A00:22:84:21")),
+	        new BaseParser.ParsedBase("Khirkre", "01", new Astro("A00:23:55:31")),
+	        new BaseParser.ParsedBase("Khirkre", "02", new Astro("A00:23:55:32"))
         ]);
         
     }
@@ -2134,7 +2133,7 @@ Location
  
  	 	 ";
         
-        var playerList = BaseListParser.ParseFromBaseReport(parseSlice);
+        var playerList = BaseParser.ParseListFromBaseReport(parseSlice);
         
         Assert.NotEmpty(playerList);
         

@@ -32,6 +32,14 @@ namespace AEBestGatePath.API.Client.Models
 #else
         public List<global::AEBestGatePath.API.Client.Models.Gate> Players { get; set; }
 #endif
+        /// <summary>The tag property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Tag { get; set; }
+#nullable restore
+#else
+        public string Tag { get; set; }
+#endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -54,6 +62,7 @@ namespace AEBestGatePath.API.Client.Models
                 { "id", n => { Id = n.GetGuidValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
                 { "players", n => { Players = n.GetCollectionOfObjectValues<global::AEBestGatePath.API.Client.Models.Gate>(global::AEBestGatePath.API.Client.Models.Gate.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "tag", n => { Tag = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -67,6 +76,7 @@ namespace AEBestGatePath.API.Client.Models
             writer.WriteGuidValue("id", Id);
             writer.WriteStringValue("name", Name);
             writer.WriteCollectionOfObjectValues<global::AEBestGatePath.API.Client.Models.Gate>("players", Players);
+            writer.WriteStringValue("tag", Tag);
         }
     }
 }

@@ -10,6 +10,8 @@ public class Guild
     [Key]
     public Guid Id { get; set; }
     public string Name { get; set; }
+    [Length(0, 5)]
+    public string Tag { get; set; }
     public int GameId { get; set; }
     public List<Gate> Players { get; set; } = [];
 }
