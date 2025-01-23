@@ -1,57 +1,209 @@
 ﻿@page "/routeplanner"
 @using System.Net
+@using System.Text.RegularExpressions
 @using AEBestGatePath.API.Client.Models
 @using AEBestGatePath.Web.Utils
+@using AEBestGatePath.Web.Shared.Tables
 @inject AEBestGatePathClient Client
+@inject NavigationManager NavManager
+@using AEBestGatePath.Web.Shared
 
 <PageTitle>Route Planner</PageTitle>
 
-<h1>RoutePlanner</h1>
+<h1>Route Planner</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (_route == null)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-}
-else
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Location</th>
-            <th>Gate Level</th>
-            <th>Commander Level</th>
+<div class="container-fluid">
+    <div class="row mb-2 gy-1">
+        <div class="col-xl-3 col-12">
+            <label for="routeStart" class="form-label">Start</label>
+            <input type="text"
+                   class="form-control @(_startValid == null ? "" : _startValid.Value ? "is-valid" : "is-invalid")"
+                   id="routeStart" @bind="Start">
+            <div class="invalid-feedback">
+                Invalid Location, please use the format <code>A00:00:00:00</code>
+            </div>
+        </div>
+        <div class="col-xl-3 col-12">
+            <label for="routeEnd" class="form-label">Destination</label>
+            <input type="text"
+                   class="form-control @(_destValid == null ? "" : _destValid.Value ? "is-valid" : "is-invalid")"
+                   id="routeEnd" @bind="Dest">
+            <div class="invalid-feedback">
+                Invalid Location, please use the format <code>A00:00:00:00</code>
+            </div>
+        </div>
+        <div class="col-xl-3 col-12 d-flex align-items-end">
+            <Multiselect
+                TKey="Guid"
+                TValue="string"
+                Options="_guilds"
+                SelectedOptions="_usingGuilds"
+                SelectedOptionsChanged="UpdateOptions">
+                <SelectedOptionsRenderer Context="options">
+                    @foreach (var item in options)
+                    {
+                        <span
+                            class="badge bg-primary"
+                            style="padding: 6px; margin-right: 10px;">
+                            @item
+                        </span>
+                    }
+                </SelectedOptionsRenderer>
+            </Multiselect>
+        </div>
+
+        <div class="col-xl-1 col d-flex align-items-end justify-content-end ms-auto">
+            @if (_loading)
+            {
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Location</th>
+        <th>Gate (Cmdr)</th>
+        <th>To Next Stop (ly / speed)</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var gate in _route)
+    {
+        <tr @onclick="@(() => NavManager.NavigateTo("/gate/" + gate.loc.FormatLocation()))" class="clickable">
+            <td>
+                <a href="https://alpha.astroempires.com/map.aspx?loc=@gate.loc.FormatLocation()">@gate.loc.FormatLocation()</a>
+            </td>
+            <td>@gate.loc.GateLevel (@gate.loc.LogiCommander)</td>
+            <td>@(gate.travelToNext == 0 ? "Complete!" : $"{gate.travelToNext}")</td>
         </tr>
-        </thead>
-        <tbody>
-        @foreach (var gate in _route)
-        {
-            <tr>
-                <td><a href="https://alpha.astroempires.com/map.aspx?loc=@gate.FormatLocation()">@gate.FormatLocation()</a></td>
-                <td>@gate.GateLevel</td>
-                <td>@gate.LogiCommander</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
+    }
+    </tbody>
+    <div class="row mt-1">
+        <div class="col-6">
+            <div class="form-group">
+                <label id="gateName">Total Distance</label>
+                <span class="form-control no-edit" aria-label="ID" aria-describedby="gateName">@_totalDistance</span>
+            </div>
+        </div>
+    </div>
+</table>
 
 @code {
     private Stop? _stop;
-    private List<Astro> _route = new ();
+    private Dictionary<Guid, string> _guilds = new();
+    private List<Guid> _usingGuilds = [];
+    private List<(Astro loc, decimal travelToNext)> _route = new();
+    private decimal _totalDistance = 0;
+    private Regex _locationRegex = new Regex(@"([A-Z][0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2})", RegexOptions.Compiled);
+
+    private ValidationMessageStore? messageStore;
+
+    private bool? _startValid;
+    private string _start = "";
+
+    public string Start
+    {
+        get => _start;
+        set
+        {
+            if (value == string.Empty)
+            {
+                _start = value;
+                _startValid = null;
+            }
+            else
+            {
+                var locationData = _locationRegex.Match(value);
+                if (locationData.Success)
+                {
+                    _start = locationData.Groups[1].Value;
+                    _startValid = true;
+                    UpdateRoute();
+                }
+                else
+                {
+                    _start = value;
+                    _startValid = false;
+                }
+            }
+        }
+    }
+
+    private bool? _destValid;
+    private string _dest = "";
+
+    public string Dest
+    {
+        get => _dest;
+        set
+        {
+            if (value == string.Empty)
+            {
+                _dest = value;
+                _destValid = null;
+            }
+            else
+            {
+                var locationData = _locationRegex.Match(value);
+                if (locationData.Success)
+                {
+                    _dest = locationData.Groups[1].Value;
+                    _destValid = true;
+                    UpdateRoute();
+                }
+                else
+                {
+                    _dest = value;
+                    _destValid = false;
+                }
+            }
+        }
+    }
+
+    private bool _loading;
+
+    private async Task UpdateRoute()
+    {
+        if (!_loading && _startValid == true && _destValid == true && _usingGuilds.Any())
+        {
+            _loading = true;
+            await InvokeAsync(StateHasChanged);
+            _stop = await Client.Route[_start][_dest].GetAsync(c => c.QueryParameters.UsingGuilds = _usingGuilds.Cast<Guid?>().ToArray());
+            _route.Clear();
+            _totalDistance = 0;
+            while (_stop != null)
+            {
+                var d = (decimal)_stop.DistanceToNext!;
+                _totalDistance += d;
+                _route.Add((_stop.Node!, d));
+                _stop = _stop.Next;
+            }
+
+            _loading = false;
+            InvokeAsync(StateHasChanged);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        _route.Clear();
-        _stop = await Client.Route["A70:51:45:10"]["A77:28:98:12"].GetAsync();
-        while (_stop != null)
+        if (_guilds.Count == 0)
         {
-            _route.Add(_stop.Node!);
-            _stop = _stop.Next;
+            _guilds = (await Client.Guilds.GetAsync() ?? []).ToDictionary(x => x.Id!.Value, x => x.Tag!);
+            _usingGuilds.Add(_guilds.First(x => x.Value == "QUAD").Key);
         }
+    }
+
+    private async Task UpdateOptions(List<Guid> o)
+    {
+        //_usingGuilds = o;
+        await UpdateRoute();
     }
 
 }

@@ -28,9 +28,18 @@ public class UserAuthenticationStateProvider(BrowserStorageService storageServic
         var accessToken = new JwtSecurityTokenHandler().ReadJwtToken(tokenFromStorage);
         if (accessToken.ValidTo < DateTime.UtcNow)
         {
-            var refreshedToken = await tokenService.RefreshAccessToken(tokenFromStorage);
+            string? refreshedToken;
+            try
+            {
+                refreshedToken = await tokenService.RefreshAccessToken(tokenFromStorage);
+            }
+            catch
+            {
+                refreshedToken = null;
+            }
             if (refreshedToken is null)
             {
+                await NotifyUserLoggedOut();
                 CurrentUser = new();
                 return _anonymousUser;
             }

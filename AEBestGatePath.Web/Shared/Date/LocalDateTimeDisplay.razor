@@ -6,11 +6,13 @@
     private DateTime? _localDate;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        var dt =  Date != null ? await DateService.GetLocalDate(Date.Value) : (DateTime?)null;
+        if (dt != _localDate)
         {
-            _localDate = Date != null ? (await DateService.GetLocalDate(Date.Value)) : null;
+            _localDate = dt;
             InvokeAsync(StateHasChanged);
         }
+        
         await base.OnAfterRenderAsync(firstRender);
     }
 

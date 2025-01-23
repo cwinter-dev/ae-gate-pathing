@@ -1,4 +1,4 @@
-﻿@page "/gate/{id}"
+﻿@page "/gate/{id:guid}"
 <h3>Gate</h3>
 @using AEBestGatePath.API.Client.Models
 @using AEBestGatePath.Web.Shared
@@ -51,19 +51,23 @@ else
             </div>
         </div>
 }
-    <div class="row">
-        <div class="col">
-            <textarea class="form-control" @ref="_inputRef" rows="3"></textarea>
+<AuthorizeView>
+    <Authorized>
+        <div class="row mt-5">
+            <div class="col">
+                <textarea class="form-control" @ref="_inputRef" rows="3"></textarea>
+            </div>
         </div>
-    </div>
+    </Authorized>
+</AuthorizeView>
 </div>
 
 @code {
 
     [Parameter]
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid _id;
+    //public Guid _id;
     
     private ElementReference _inputRef;
     private Gate? _gate { get; set; }
@@ -78,19 +82,18 @@ else
         var selfReference = DotNetObjectReference.Create(this);
         
         await module.InvokeVoidAsync("addOnPasteEventListener", _inputRef, selfReference);
-        if (Guid.TryParse(Id, out var id))
+            //if (Guid.TryParse(Id, out var id))
             try
             {
-                _id = id;
-                _gate = await Client.Gates[_id].GetAsync();
+                _gate = await Client.Gates[Id].GetAsync();
                 InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-        else
-            NavManager.NavigateTo("404");
+        // else
+        //     NavManager.NavigateTo("404");
     }
     
 
@@ -98,7 +101,7 @@ else
     public async Task HandlePaste(string text)
     {
         await Client.Gates.Paste.PostAsync(text);
-        _gate = await Client.Gates[_id].GetAsync();
+        _gate = await Client.Gates[Id].GetAsync();
         InvokeAsync(StateHasChanged);
     }
     

@@ -9,9 +9,13 @@ public static class RouteEndpoints
     public static void MapRouteEndpoints(this RouteGroupBuilder group)
     {
         group.MapGet("/{origin}/{destination}", async (string origin, string destination, int? gateLevel,
-            int? commanderLevel, AstroEmpiresContext db, decimal gameVersion = 1m) =>
+            int? commanderLevel, AstroEmpiresContext db, decimal gameVersion = 1m, Guid[]? usingGuilds = null) =>
         {
-            var jgs = await db.Gates.Where(x => !x.Occupied).Select(x => x.Location).Select(x => x.ToAstro()).ToListAsync();
+            var jgs = await db.Gates.Where(x => !x.Occupied)
+                .Include(x => x.Player)
+                .Where(x => usingGuilds == null || usingGuilds.Contains(x.Player!.GuildId!.Value))
+                .Select(x => x.Location).Select(x => x.ToAstro())
+                .ToListAsync();
 
             var start = new Astro(origin, gateLevel ?? 0, commanderLevel ?? 0);
             if (gateLevel == null || commanderLevel == null)

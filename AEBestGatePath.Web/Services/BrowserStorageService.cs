@@ -4,7 +4,7 @@ namespace AEBestGatePath.Web.Services;
 
 public class BrowserStorageService(IJSRuntime javascript)
 {
-    const string TokenName = "BlazorOAuth.AccessToken";
+    const string TokenName = "AETools.AccessToken";
 
     public async Task SaveAccessToken(string accessToken)
         => await javascript.InvokeVoidAsync("localStorage.setItem", TokenName, accessToken);

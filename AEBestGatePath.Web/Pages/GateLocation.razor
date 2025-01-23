@@ -1,0 +1,29 @@
+﻿@page "/gate/{location}"
+@inject NavigationManager NavManager
+@inject AEBestGatePathClient Client
+<h3>Redirecting...</h3>
+
+@code {
+
+
+    [Parameter]
+    public string Location { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+        try
+        {
+            var gate = await Client.Gates[Location].GetAsync();
+            if (gate is not null)
+                NavManager.NavigateTo("/gate/" + gate.Id);
+            else
+                NavManager.NavigateTo("404");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            NavManager.NavigateTo("404");
+        }
+    }
+}

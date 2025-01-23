@@ -40,6 +40,25 @@ public static class GateEndpoints
                 ? Results.Ok(gate)
                 : Results.NotFound())
             .Produces<Gate>();
+        
+        group.MapGet("/{loc}", async (string loc, AstroEmpiresContext db) =>
+        {
+            var location = new Astro(loc);
+            var gate = await db.Gates.FirstOrDefaultAsync(x =>
+                x.Location.Server == location.Server &&
+                x.Location.Cluster == location.Cluster &&
+                x.Location.Galaxy == location.Galaxy &&
+                x.Location.RegionX == location.RegionX &&
+                x.Location.RegionY == location.RegionY &&
+                x.Location.SystemX == location.SystemX &&
+                x.Location.SystemY == location.SystemY &&
+                x.Location.Ring == location.Ring &&
+                x.Location.RingPosition == location.RingPosition);
+            
+            return gate == null ? Results.NotFound() : Results.Redirect($"/gates/{gate.Id}", true, true);
+        }).Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status307TemporaryRedirect)
+            .Produces(StatusCodes.Status308PermanentRedirect);
 
         group.MapPost("/", async (Gate gate, AstroEmpiresContext db) =>
         {
@@ -59,10 +78,10 @@ public static class GateEndpoints
                 return Results.NotFound($"Player {parsed.PlayerName} not found");
             var location = Location.FromAstro(parsed.Astro);
 
-            var existingGate = db.Gates.Include(x => x.Player).FirstOrDefault(x =>
+            var existingGate = await db.Gates.Include(x => x.Player).FirstOrDefaultAsync(x =>
                 x.Location.Server == location.Server &&
                 x.Location.Cluster == location.Cluster &&
-                x.Location.Galaxy == location.GateLevel &&
+                x.Location.Galaxy == location.Galaxy &&
                 x.Location.RegionX == location.RegionX &&
                 x.Location.RegionY == location.RegionY &&
                 x.Location.SystemX == location.SystemX &&
@@ -88,6 +107,7 @@ public static class GateEndpoints
                 return Results.Created($"/gates/{gate.Id}", gate);
             }
 
+            existingGate.Location = location;
             existingGate.Occupied = parsed.Occupied;
             existingGate.LastUpdated = DateTime.UtcNow - parsed.LastSeen;
             existingGate.Player = player;

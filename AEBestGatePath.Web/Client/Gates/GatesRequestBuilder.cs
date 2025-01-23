@@ -32,27 +32,27 @@ namespace AEBestGatePath.API.Client.Gates
         }
         /// <summary>Gets an item from the AEBestGatePath.API.Client.gates.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>
-        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder"/></returns>
-        public global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder this[Guid position]
+        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder"/></returns>
+        public global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder this[Guid position]
         {
             get
             {
                 var urlTplParams = new Dictionary<string, object>(PathParameters);
-                urlTplParams.Add("id", position);
-                return new global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder(urlTplParams, RequestAdapter);
+                urlTplParams.Add("%2Did", position);
+                return new global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder(urlTplParams, RequestAdapter);
             }
         }
         /// <summary>Gets an item from the AEBestGatePath.API.Client.gates.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>
-        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder"/></returns>
         [Obsolete("This indexer is deprecated and will be removed in the next major version. Use the one with the typed parameter instead.")]
-        public global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder this[string position]
+        public global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder this[string position]
         {
             get
             {
                 var urlTplParams = new Dictionary<string, object>(PathParameters);
-                if (!string.IsNullOrWhiteSpace(position)) urlTplParams.Add("id", position);
-                return new global::AEBestGatePath.API.Client.Gates.Item.GatesItemRequestBuilder(urlTplParams, RequestAdapter);
+                if (!string.IsNullOrWhiteSpace(position)) urlTplParams.Add("%2Did", position);
+                return new global::AEBestGatePath.API.Client.Gates.Item.ItemRequestBuilder(urlTplParams, RequestAdapter);
             }
         }
         /// <summary>

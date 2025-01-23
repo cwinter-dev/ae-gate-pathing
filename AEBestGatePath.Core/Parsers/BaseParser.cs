@@ -2,12 +2,25 @@
 
 namespace AEBestGatePath.Core.Parsers;
 
-
 public static partial class BaseParser
 {
+    private static string[] _defenses =
+    [
+        "Barracks",
+        "Laser Turrets",
+        "Missile Turrets",
+        "Plasma Turrets",
+        "Ion Turrets",
+        "Photon Turrets",
+        "Disruptor Turrets",
+        "Deflection Shields",
+        "Planetary Shield",
+        "Planetary Ring"
+    ];
+
     public class ParsedBase(string playerName, string baseName, Astro astro) : IEquatable<ParsedBase>
     {
-        public string? GuildTag {get; set;}
+        public string? GuildTag { get; set; }
         public string PlayerName { get; set; } = playerName;
         public string BaseName { get; set; } = baseName;
         public bool Occupied { get; set; }
@@ -35,10 +48,12 @@ public static partial class BaseParser
             return HashCode.Combine(GuildTag, PlayerName, BaseName, Occupied, Astro, LastSeen);
         }
     }
+
     private static Regex BaseImport { get; } = BaseReportRegex();
     private static Regex BaseOwner { get; } = BaseOwnerRegex();
     private static Regex BaseCommander { get; } = BaseCommanderRegex();
     private static Regex RecordedData { get; } = RecordedDataRegex();
+
     public static List<ParsedBase> ParseListFromBaseReport(string baseReport)
     {
         List<ParsedBase> baseList = [];
@@ -59,12 +74,13 @@ public static partial class BaseParser
                     foundPrefixes = 0;
                 continue;
             }
+
             var baseData = BaseImport.Match(line.Trim());
-            baseList.Add(new (baseData.Groups[1].Value.Trim(), baseData.Groups[2].Value.Trim(),
+            baseList.Add(new(baseData.Groups[1].Value.Trim(), baseData.Groups[2].Value.Trim(),
                 new Astro(baseData.Groups[3].Value.Trim())));
         }
-        
-        
+
+
         return baseList;
     }
 
@@ -105,7 +121,7 @@ public static partial class BaseParser
                 {
                     baseName = prevLine;
                 }
-                
+
                 prevLine = line;
                 continue;
             }
@@ -116,10 +132,11 @@ public static partial class BaseParser
                 {
                     location = line.Split('\t').First();
                 }
+
                 prevLine = line;
                 continue;
             }
-            
+
             if (playerName == string.Empty)
             {
                 var ownerInfo = BaseOwner.Match(line);
@@ -129,6 +146,7 @@ public static partial class BaseParser
                         guildTag = ownerInfo.Groups[1].Value;
                     playerName = ownerInfo.Groups[2].Value;
                 }
+
                 continue;
             }
 
@@ -137,7 +155,7 @@ public static partial class BaseParser
                 if (line.StartsWith("Occupier"))
                     occupied = true;
             }
-            
+
             if (logiLevel == null)
             {
                 var commanderInfo = BaseCommander.Match(line);
@@ -161,24 +179,25 @@ public static partial class BaseParser
                         _ => throw new ApplicationException("Unknown recorded time")
                     };
                 }
+
                 continue;
             }
 
-            if (line.StartsWith("Structures"))
-                addingStructures = true;
-            else if (line.Contains('/'))
-                addingStructures = false;
+
             if (addingStructures)
             {
                 if (char.IsDigit(line[0]))
                 {
                     structures[structureIx] = (structures[structureIx].Item1, int.Parse(line));
+                    structureIx++;
                 }
-                else
-                {
+                else if (!_defenses.Contains(line))
                     structures.Add((line, 0));
-                }
+                else
+                    addingStructures = false;
             }
+            else if (line.StartsWith("Structures"))
+                addingStructures = true;
         }
 
         jgLevel = structures.FirstOrDefault(x => x.Item1 == "Jump Gate").Item2;
@@ -187,7 +206,7 @@ public static partial class BaseParser
             { GuildTag = guildTag, LastSeen = lastSeen, Occupied = occupied };
 
         return parsed;
-        
+
         //baseReport = baseReport.Trim();
         //var recorded = baseReport.Contains("Recorded data from");
 
@@ -203,7 +222,8 @@ public static partial class BaseParser
         // throw new NotImplementedException();
     }
 
-    [GeneratedRegex(@"^(?:\[[A-Za-z]+\]\s)?(.+)\t(.+)\t([A-Z][0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2})$", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^(?:\[[A-Za-z]+\]\s)?(.+)\t(.+)\t([A-Z][0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{2})$",
+        RegexOptions.Compiled)]
     private static partial Regex BaseReportRegex();
 
     [GeneratedRegex(@"^Base Owner:?\s+(?:\[(.+)\]\s)?(.+)$", RegexOptions.Compiled)]
@@ -214,5 +234,4 @@ public static partial class BaseParser
 
     [GeneratedRegex(@"^Recorded data from ([0-9]+) ([a-z]+)\(s\) ago.$", RegexOptions.Compiled)]
     private static partial Regex RecordedDataRegex();
-    
 }

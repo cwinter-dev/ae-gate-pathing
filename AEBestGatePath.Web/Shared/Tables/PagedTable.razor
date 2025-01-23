@@ -262,9 +262,11 @@ else
     {
         // this is inefficiency, but manageable
         //_activeSort = header;
-        await SortNameChanged.InvokeAsync(header.Name);
-        await AscChanged.InvokeAsync(asc);
-        await Fetch();
+        await Task.WhenAll(SortNameChanged.InvokeAsync(header.Name), AscChanged.InvokeAsync(asc)).ContinueWith(async _ =>
+            {
+                if (_serverProcessing)
+                    await Fetch();
+            });
     }
 
     private string SortDisplay => GetSortName(_activeSort, Asc ?? true);

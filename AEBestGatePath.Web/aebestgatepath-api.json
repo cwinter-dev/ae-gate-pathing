@@ -197,6 +197,34 @@
         }
       }
     },
+    "/gates/{loc}": {
+      "get": {
+        "tags": [
+          "AEBestGatePath.API"
+        ],
+        "parameters": [
+          {
+            "name": "loc",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          },
+          "307": {
+            "description": "Temporary Redirect"
+          },
+          "308": {
+            "description": "Permanent Redirect"
+          }
+        }
+      }
+    },
     "/gates/paste": {
       "post": {
         "tags": [
@@ -271,6 +299,17 @@
               "type": "number",
               "format": "double",
               "default": 1
+            }
+          },
+          {
+            "name": "usingGuilds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
             }
           }
         ],
@@ -423,7 +462,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SignInResponse"
+                  "type": "string"
                 }
               }
             }
@@ -761,33 +800,6 @@
               "$ref": "#/components/schemas/Gate"
             },
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RefreshToken": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiresUtc": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SignInResponse": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "refreshToken": {
-            "$ref": "#/components/schemas/RefreshToken"
           }
         },
         "additionalProperties": false
