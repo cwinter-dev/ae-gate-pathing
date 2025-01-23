@@ -23,6 +23,7 @@ public class Journey
         
         var n2 = true;
         var newPaths = new Dictionary<Stop, decimal>();
+        // TODO: shortcut destination gate as highest jg in path
         var baseDistance = Source.DistanceTo(Destination, GameVersion);
         var root = new Stop(Source, GameVersion);
         newPaths.Add(root, baseDistance);

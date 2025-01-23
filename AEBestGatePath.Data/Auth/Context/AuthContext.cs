@@ -10,7 +10,7 @@ public class AuthContext : DbContext
  
     }
  
-    public DbSet<User> User { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<UserRoles> UserRoles { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

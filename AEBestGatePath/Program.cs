@@ -70,18 +70,18 @@ var start = new Astro("A79:51:98:12");
 
 var journey = new Journey(start, dest, jgList);
 Console.WriteLine(sw.Elapsed.Milliseconds);
-var shortcutJourney = journey.GetShortestPathShortcut();
-Console.WriteLine(shortcutJourney);
-var e = shortcutJourney;
-while (e != null)
-{
-    Console.WriteLine(e.Node.DistanceTo(dest));
-    e = e.Next;
-}
+// var shortcutJourney = journey.GetShortestPathShortcut();
+// Console.WriteLine(shortcutJourney);
+// var e = shortcutJourney;
+// while (e != null)
+// {
+//     Console.WriteLine(e.Node.DistanceTo(dest));
+//     e = e.Next;
+// }
 Console.WriteLine(sw.Elapsed.Milliseconds);
 var bruteJourney = journey.GetShortestPath();
 Console.WriteLine(bruteJourney);
-e = bruteJourney;
+var e = bruteJourney;
 while (e != null)
 {
     Console.WriteLine(e.Node.DistanceTo(dest));
