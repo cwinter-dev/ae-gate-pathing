@@ -133,6 +133,8 @@ else
 
 app.MapGroup("/gates")
     .MapGateEndpoints();
+app.MapGroup("/players")
+    .MapPlayerEndpoints();
 app.MapGroup("/route")
     .MapRouteEndpoints();
 app.MapGroup("/guilds")

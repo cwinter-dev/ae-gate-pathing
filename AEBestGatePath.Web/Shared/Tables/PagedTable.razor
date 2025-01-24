@@ -240,8 +240,8 @@ else
             _initialized = true;
             await InvokeAsync(StateHasChanged);
         }
-        if (Headers.Any(x => !string.IsNullOrWhiteSpace(x.Title)))
-            await JS.InvokeVoidAsync("addTooltips");
+        //if (Headers.Any(x => !string.IsNullOrWhiteSpace(x.Title)))
+        await JS.InvokeVoidAsync("addTooltips");
     }
     
     

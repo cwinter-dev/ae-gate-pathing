@@ -11,18 +11,22 @@
 
 
 <TableUtil @bind-Search="Search" @bind-ItemsPerPage="ItemsPerPage"
-           @bind-Check="ViewOccupied" CheckLabel="Occupied" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
+           @bind-Check="ViewOccupied" CheckLabel="Include Occupied?" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
 <PagedTable @ref="Table" @bind-Page="Page" @bind-Asc="Asc" @bind-SortName="Sort" Class="table-hover table-striped" Headers="@_headers" ItemsPerPage="@ItemsPerPage" FetchNewData="@FetchPagedGates">
     <RowTemplate Context="gate">
         <RowLink Url="@($"/gate/{gate.Id}")">
-            <td>@gate.Player!.Guild!.Name</td>
+            <td>@gate.Player!.Guild!.Tag</td>
             <td>@gate.Player!.Name</td>
             <td>@gate.Name</td>
             <td>@(gate.Occupied!.Value ? "Yes" : "No")</td>
             <td><AstroLocation Location="gate.Location" /></td>
             <td>@gate.Location!.GateLevel</td>
             <td>@gate.Location!.LogiCommander</td>
-            <td><LocalDateTimeDisplay Date="gate.LastUpdated!.Value.DateTime" /></td>
+            <td><LocalDateTimeDisplay Date="gate.LastUpdated!.Value.DateTime" />
+                <span class="badge rounded-pill text-bg-danger ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                      data-bs-title="Potentially Outdated">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                </span></td>
         </RowLink>
     </RowTemplate>
 </PagedTable>
@@ -37,7 +41,7 @@
     }
     private readonly List<TableHeader<Gate>> _headers =
     [
-        new() { Name = "Guild", SortPath = "Player.Guild.Name" },
+        new() { Name = "Guild", SortPath = "Player.Guild.Tag" },
         new() { Name = "Player Name", SortPath = "Player.Name" },
         new() { Name = "Name", SortPath = "Name" },
         new() { Name = "Occupied", SortPath = "Occupied" },

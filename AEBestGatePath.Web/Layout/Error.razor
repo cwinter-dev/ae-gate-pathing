@@ -1,0 +1,70 @@
+﻿@using Microsoft.Extensions.Logging
+@using System.Text.Json
+@using Blazored.Toast.Services
+@using Microsoft.Kiota.Abstractions
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inject IWebAssemblyHostEnvironment Env
+@inject ILogger<Error> Logger
+@inject IToastService ToastService
+
+<CascadingValue Value=this>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public void ProcessError(string err)
+    {
+        Logger.LogError("Error:ProcessError - Message: {Message}", err);
+        ToastService.ShowError(err);
+        StateHasChanged();
+    }
+
+    public void ProcessError(Exception ex)
+    {
+        if (ex is ApiException aex)
+        {
+            try
+            {
+                switch (aex.ResponseStatusCode)
+                {
+                    case 401:
+                        ToastService.ShowError("Please log in again or contact an Administrator.");
+                        break;
+                    case 403:
+                        ToastService.ShowError("You do not have permission to do that. Please contact an administrator if you believe this is an error.");
+                        break;
+                    case 422:
+                        ToastService.ShowError(aex.Message as string);
+                        break;
+                    default:
+                    {
+                        using var doc = JsonDocument.Parse(aex.Message as string);
+                        foreach (var prop in doc.RootElement.GetProperty("errors").EnumerateObject())
+                        {
+                            foreach (var err in prop.Value.EnumerateArray())
+                            {
+                                ToastService.ShowError(err.GetString() ?? string.Empty);
+                            }
+                        }
+                        break;
+                    }
+                }
+                StateHasChanged();
+                return;
+            }
+            catch
+            {}
+        }
+        else if (ex is TaskCanceledException)
+        {
+            return;
+        }
+        Logger.LogError("Error:ProcessError - Type: {Type} Message: {Message}", 
+            ex.GetType(), ex.Message);
+        ToastService.ShowError(Env.IsDevelopment() ? ex.Message : "Something went wrong. Please try again.");
+        StateHasChanged();
+    }
+}

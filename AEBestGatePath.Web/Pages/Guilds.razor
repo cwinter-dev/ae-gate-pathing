@@ -1,0 +1,58 @@
+﻿@page "/guilds"
+@using AEBestGatePath.API.Client.Models
+@inject AEBestGatePathClient Client
+<h3>Guilds</h3>
+
+@if (_guilds == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var guild in _guilds)
+        {
+            <tr>
+                <td>[@guild.Tag]</td>
+                <td>@guild.Name</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter] public required Error Error { get; set; }
+
+    private List<Guild>? _guilds;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                _guilds = await Client.Guilds.GetAsync();
+                InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessError(ex);
+            }
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

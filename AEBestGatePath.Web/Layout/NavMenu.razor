@@ -2,8 +2,10 @@
 @using Microsoft.Extensions.Configuration
 @using System.Globalization
 @using System.Threading
+@using AEBestGatePath.Web.Services
 @inject IConfiguration Configuration
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AEBestGatePathClient Client
+@inject UserAuthenticationStateProvider AuthenticationStateProvider
 <div class="flex-shrink-0 p-3 bg-white" style="width: 250px;">
     <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
         <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
@@ -12,26 +14,33 @@
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <NavLink class="btn rounded position-relative" Match="NavLinkMatch.Prefix" href="/gates">Gates&nbsp;
-                @if (_outdatedAstros > 0)
-                {
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        @_outdatedAstros
-                        <span class="visually-hidden">outdated astros</span>
-                    </span>
-                }
+                <AuthorizeView>
+                    <Authorized>
+                        @if (_outdatedAstros > 0)
+                        {
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                @_outdatedAstros
+                                <span class="visually-hidden">outdated astros</span>
+                            </span>
+                        }
+                    </Authorized>
+                </AuthorizeView>
             </NavLink>
         </li>
         <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#route-collapse" aria-expanded="true">
-                Route Planner
-            </button>
-            <div class="collapse show" id="route-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><NavLink Match="NavLinkMatch.Prefix" href="/routeplanner" class="link-dark rounded">Route Planner</NavLink></li>
-                    <li><NavLink Match="NavLinkMatch.Prefix" href="/gates" class="link-dark rounded">Gates</NavLink></li>
-                </ul>
-            </div>
+            <NavLink class="btn rounded position-relative" Match="NavLinkMatch.Prefix" href="/routeplanner">Route Planner</NavLink>
         </li>
+        @* <li class="mb-1"> *@
+        @*     <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#route-collapse" aria-expanded="true"> *@
+        @*         Route Planner *@
+        @*     </button> *@
+        @*     <div class="collapse show" id="route-collapse"> *@
+        @*         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"> *@
+        @*             <li><NavLink Match="NavLinkMatch.Prefix" href="/routeplanner" class="link-dark rounded">Route Planner</NavLink></li> *@
+        @*             <li><NavLink Match="NavLinkMatch.Prefix" href="/gates" class="link-dark rounded">Gates</NavLink></li> *@
+        @*         </ul> *@
+        @*     </div> *@
+        @* </li> *@
         <li class="mb-1">
             <NavLink class="btn rounded" Match="NavLinkMatch.Prefix" href="/players">Players</NavLink>
         </li>
@@ -46,30 +55,14 @@
 
 @code {
 
-    private int _outdatedAstros = 0;
-    private Timer _timer;
+    private int? _outdatedAstros = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (_outdatedAstros is null)
         {
-            _timer ??= new Timer(_ =>
-            {
-                try
-                {
-                    var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
-                    var user = authState.User;
-
-                    if (user.Identity?.IsAuthenticated != true) return;
-                    //TODO: add outdated count
-                    _outdatedAstros = 0;
-                    InvokeAsync(StateHasChanged);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }, null, (long)0, 5000);
+            _outdatedAstros = await Client.Gates.Outdated.GetAsync() ?? 0;
+            InvokeAsync(StateHasChanged);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

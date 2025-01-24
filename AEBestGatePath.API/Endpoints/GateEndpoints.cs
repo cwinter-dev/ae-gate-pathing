@@ -30,6 +30,11 @@ public static class GateEndpoints
 
             return paged;
         });
+
+        group.MapGet("/outdated", async (AstroEmpiresContext db) =>
+        {
+            return await db.Gates.CountAsync(x => x.LastUpdated == DateTime.MinValue || DateTime.UtcNow - x.LastUpdated > TimeSpan.FromDays(30));
+        });
         
         group.MapGet("/{id:guid}", async (Guid id, AstroEmpiresContext db) =>
             await db.Gates

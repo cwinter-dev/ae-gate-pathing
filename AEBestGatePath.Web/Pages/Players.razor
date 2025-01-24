@@ -1,66 +1,138 @@
 ﻿@page "/players"
-@inherits PagedTableComponentBase<Gate>
-@using AEBestGatePath.API.Client.Gates.Paged
+@inherits PagedTableComponentBase<Player>
 @using AEBestGatePath.API.Client.Models
 @using AEBestGatePath.Web.Shared.Tables
-@using AEBestGatePath.Web.Shared.Date
-@using AEBestGatePath.Web.Shared
+@using Blazored.Toast.Services
 @inject AEBestGatePathClient Client
-<h3>Gates</h3>
+@inject IToastService ToastService
+@inject IJSRuntime JS
+<div class="row d-flex">
+    <div class="col-2">
+        <h3>Players</h3>
+    </div>
+    <div class="col-xl-2 col-12 ms-auto">
+        <AuthorizeView>
+            <Authorized>
+                <div class="col-auto ms-auto">
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPlayersModal">Import Players</a>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</div>
 
 
 
 <TableUtil @bind-Search="Search" @bind-ItemsPerPage="ItemsPerPage"
-           @bind-Check="ViewOccupied" CheckLabel="Occupied" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
+           @bind-Dropdowns="_dropdowns" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
 <PagedTable @ref="Table" @bind-Page="Page" @bind-Asc="Asc" @bind-SortName="Sort" Class="table-hover table-striped" Headers="@_headers" ItemsPerPage="@ItemsPerPage" FetchNewData="@FetchPagedGates">
-    <RowTemplate Context="gate">
-        <RowLink Url="@($"/gate/{gate.Id}")">
-            <td>@gate.Player!.Guild!.Name</td>
-            <td>@gate.Player!.Name</td>
-            <td>@gate.Name</td>
-            <td>@(gate.Occupied!.Value ? "Yes" : "No")</td>
-            <td><AstroLocation Location="gate.Location" /></td>
-            <td>@gate.Location!.GateLevel</td>
-            <td>@gate.Location!.LogiCommander</td>
-            <td><LocalDateTimeDisplay Date="gate.LastUpdated!.Value.DateTime" /></td>
-        </RowLink>
+    <RowTemplate Context="player">
+        <tr>
+            <td>@player.Name</td>
+            <td>@player.Guild?.Tag</td>
+        </tr>
     </RowTemplate>
 </PagedTable>
 
+
+
+
+<div class="modal" id="addPlayersModal" tabindex="-1" @ref="_addPlayerModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Player(s)</h5>
+                <div class="col-xl-1 col d-flex align-items-end justify-content-end ms-auto">
+                    @if (_loading)
+                    {
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <a class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+            </div>
+            <div class="modal-body">
+                
+                <div class="row mt-5">
+                    <div class="col">
+                        <textarea class="form-control @(_pasteValid == null ? "" : _pasteValid.Value ? "is-valid" : "is-invalid")" @ref="_inputRef" @bind="_paste" rows="3"></textarea>
+                        <div class="invalid-feedback">
+                            Unable to parse
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
+                @* <a class="btn btn-primary" data-bs-dismiss="modal" @onclick="UpsertPlayer">Save</a> *@
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
+    [CascadingParameter]
+    public required Error Error { get; set; }
 
     private bool _viewOccupied;
-    protected override Task OnInitializedAsync()
+    private Dictionary<Guid, string> _guilds = new();
+    private Guid? _guild;
+    private List<TableUtil.Dropdown> _dropdowns = new();
+    private ElementReference _addPlayerModal;
+    private ElementReference _inputRef;
+    private bool? _pasteValid;
+    private bool _loading;
+    private string _paste;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Sort = "Last Update";
-        return Task.CompletedTask;
+        if (firstRender)
+        {
+
+        
+            var module = await JS.InvokeAsync<IJSObjectReference>(
+                "import", "./js/pasteInteropHelper.js");
+
+            var selfReference = DotNetObjectReference.Create(this);
+            await module.InvokeVoidAsync("addOnPasteEventListener", _inputRef, selfReference);
+            _guilds = (await Client.Guilds.GetAsync() ?? []).ToDictionary(x => x.Id!.Value, x => x.Tag!);
+            _dropdowns =
+            [
+                new TableUtil.Dropdown
+                {
+                    Name = "Guilds",
+                    GetValue = () => _guild?.ToString() ?? "",
+                    SetValue = (s) => _guild = string.IsNullOrEmpty(s) ? null : new Guid(s),
+                    Source = () => _guilds.Prepend(new (Guid.Empty, "Select...")).ToDictionary(x => x.Key.ToString(), x => x.Value),
+                    Placeholder = "Guild"
+                }
+            ];
+            Sort = "Name";
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
-    private readonly List<TableHeader<Gate>> _headers =
+    private readonly List<TableHeader<Player>> _headers =
     [
-        new() { Name = "Guild", SortPath = "Player.Guild.Name" },
-        new() { Name = "Player Name", SortPath = "Player.Name" },
         new() { Name = "Name", SortPath = "Name" },
-        new() { Name = "Occupied", SortPath = "Occupied" },
-        new() { Name = "Location", SortPath = "Sort" },
-        new() { Name = "Gate Level", SortPath = "Location.GateLevel" },
-        new() { Name = "Logistics Level", SortPath = "Location.LogiCommander" },
-        new() { Name = "Last Update", SortPath = "LastUpdated" }
+        new() { Name = "Guild", SortPath = "Guild.Tag" },
     ];
 
-    private async Task<Paged<Gate>> FetchPagedGates(int page, string sort, bool asc)
+    private async Task<Paged<Player>> FetchPagedGates(int page, string sort, bool asc)
     {
         try
         {
-            var paged = await Client.Gates.Paged.GetAsync((config) =>
+            var paged = await Client.Players.Paged.GetAsync((config) =>
             {
-                config.QueryParameters = new PagedRequestBuilder.PagedRequestBuilderGetQueryParameters()
+                config.QueryParameters = new()
                 {
                     Page = page,
                     ItemsPerPage = ItemsPerPage,
                     Search = Search,
                     Asc = asc,
                     Sort = sort,
-                    Occupied = _viewOccupied
+                    Guild = _guild == Guid.Empty ? null : _guild
                 };
                 
             });
@@ -81,11 +153,32 @@
         }
     }
     
-    [Parameter]
-    [SupplyParameterFromQuery(Name = nameof(ViewOccupied))]
-    public bool? ViewOccupied
+
+    [JSInvokable]
+    public async Task HandlePaste(string text)
     {
-        get => _viewOccupied;
-        set => HandleNewValueWithQuery(value, _viewOccupied, false, nameof(ViewOccupied), x => _viewOccupied = x ?? false);
+        if (_loading) return;
+        try
+        {
+            _pasteValid = null;
+            _loading = true;
+            await Client.Players.Paste.PostAsync(text);
+            _pasteValid = true;
+            await JS.InvokeVoidAsync(
+                "interopFunctions.hideModal", _addPlayerModal);
+            ToastService.ShowSuccess("Added Players!");
+            _paste = string.Empty;
+            await Table.Fetch();
+        }
+        catch (Exception e)
+        {
+            _pasteValid = false;
+            Error.ProcessError(e);
+        }
+        finally
+        {
+            _loading = false;
+            InvokeAsync(StateHasChanged);
+        }
     }
 }

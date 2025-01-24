@@ -3,6 +3,7 @@
 using AEBestGatePath.API.Client.Auth;
 using AEBestGatePath.API.Client.Gates;
 using AEBestGatePath.API.Client.Guilds;
+using AEBestGatePath.API.Client.Players;
 using AEBestGatePath.API.Client.Route;
 using AEBestGatePath.API.Client.Token;
 using AEBestGatePath.API.Client.User;
@@ -38,6 +39,11 @@ namespace AEBestGatePath.API.Client
         public global::AEBestGatePath.API.Client.Guilds.GuildsRequestBuilder Guilds
         {
             get => new global::AEBestGatePath.API.Client.Guilds.GuildsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The players property</summary>
+        public global::AEBestGatePath.API.Client.Players.PlayersRequestBuilder Players
+        {
+            get => new global::AEBestGatePath.API.Client.Players.PlayersRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The route property</summary>
         public global::AEBestGatePath.API.Client.Route.RouteRequestBuilder Route

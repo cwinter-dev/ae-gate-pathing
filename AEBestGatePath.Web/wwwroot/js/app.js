@@ -44,3 +44,8 @@ window.getLocalTime = function(utc) {
 window.getUtcTime = function(local) {
     return new Date(local).toUTCString();
 }
+
+window.addTooltips = function() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => bootstrap.Tooltip.getOrCreateInstance(tooltipTriggerEl));
+}
