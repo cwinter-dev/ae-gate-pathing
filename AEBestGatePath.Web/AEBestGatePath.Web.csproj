@@ -20,12 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Http">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.AspNetCore.Http.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.AspNetCore.WebUtilities">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
-      </Reference>
+      <Reference Include="Microsoft.AspNetCore.Http" />
+      <Reference Include="Microsoft.AspNetCore.WebUtilities" />
     </ItemGroup>
 
     <ItemGroup>
