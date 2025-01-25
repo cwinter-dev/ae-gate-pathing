@@ -11,10 +11,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AutoRestExtensions;
+using Google.Cloud.SecretManager.V1;
 
+//SecretManagerServiceClient client = SecretManagerServiceClient.Create();
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+// builder.Services.AddSecretManagerServiceClient((builder) =>
+// {
+//     builder.
+// })
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -43,7 +49,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(allowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://localhost:7282", "http://localhost:5206")
+            policy.WithOrigins("https://localhost:7282", "http://localhost:5206", "https://probable-byway-237515.web.app", "https://probable-byway-237515.firebase.app")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
