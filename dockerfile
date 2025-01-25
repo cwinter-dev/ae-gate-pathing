@@ -8,7 +8,7 @@ RUN dotnet test AEBestGatePath.Test
 RUN dotnet publish AEBestGatePath.API -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
-COPY --from=build-env /app/out .
+COPY --from=build-env /out .
 
 ENV ASPNETCORE_ENVIRONMENT Production
 
