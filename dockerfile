@@ -11,5 +11,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 COPY --from=build-env /out .
 
 ENV ASPNETCORE_ENVIRONMENT Production
-
+EXPOSE $PORT
+ENV ASPNETCORE_URLS=http://*:$PORT
 ENTRYPOINT ["dotnet", "AEBestGatePath.API.dll"]
