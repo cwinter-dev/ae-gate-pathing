@@ -1,8 +1,8 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:9.0
-COPY ../AEBestGatePath.Web AEBestGatePath.Web
-COPY ../AEBestGatePath.Data AEBestGatePath.Data
-COPY ../AEBestGatePath.Core AEBestGatePath.Core
-COPY ../AEBestGatePath.Test AEBestGatePath.Test
+COPY ./AEBestGatePath.Web AEBestGatePath.Web
+COPY ./AEBestGatePath.Data AEBestGatePath.Data
+COPY ./AEBestGatePath.Core AEBestGatePath.Core
+COPY ./AEBestGatePath.Test AEBestGatePath.Test
 RUN dotnet restore
 RUN dotnet test
 RUN dotnet publish AEBestGatePath.API/AEBestGatePath.API.csproj -c Release -o out
