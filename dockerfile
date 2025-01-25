@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:9.0
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 COPY ./AEBestGatePath.API AEBestGatePath.API
 COPY ./AEBestGatePath.Data AEBestGatePath.Data
 COPY ./AEBestGatePath.Core AEBestGatePath.Core
