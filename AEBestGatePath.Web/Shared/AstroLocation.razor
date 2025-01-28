@@ -1,6 +1,6 @@
 ﻿@using AEBestGatePath.API.Client.Models
 
-<a href="https://alpha.astroempires.com/map.aspx?loc=@FormattedLocation" target="_blank">@(FormattedLocation)</a>
+<a href="https://alpha.astroempires.com/map.aspx?loc=@FormattedLocation" target="_blank" @onclick:stopPropagation="true">@(FormattedLocation)</a>
 
 @code {
 
