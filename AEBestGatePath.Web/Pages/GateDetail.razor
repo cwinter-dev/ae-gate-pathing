@@ -18,7 +18,7 @@
 else
 {
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="my-5">@_gate.Name @(_gate.Occupied!.Value ? "Occupied" : "")</h1>
+            <h1 class="my-5">@_gate.Name <small class="text-danger">@(_gate.Occupied!.Value ? "(Occupied)" : "")</small></h1>
         </div>
         <div class="row">
             <div class="col-6">
