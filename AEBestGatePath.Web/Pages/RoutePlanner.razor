@@ -5,6 +5,7 @@
 @inject AEBestGatePathClient Client
 @inject NavigationManager NavManager
 @using AEBestGatePath.Web.Shared
+@using AEBestGatePath.Web.Shared.Tables
 
 <PageTitle>Route Planner</PageTitle>
 
@@ -74,13 +75,13 @@
     <tbody>
     @foreach (var gate in _route)
     {
-        <tr @onclick="@(() => NavManager.NavigateTo("/gate/" + gate.loc.FormatLocation()))" class="clickable">
+        <RowLink Url="@("/gate/" + @gate.loc.FormatLocation())">
             <td>
-                <a href="https://alpha.astroempires.com/map.aspx?loc=@gate.loc.FormatLocation()" target="_blank">@gate.loc.FormatLocation()</a>
+                <a href="https://alpha.astroempires.com/map.aspx?loc=@gate.loc.FormatLocation()" target="_blank" @onclick:stopPropagation="true">@gate.loc.FormatLocation()</a>
             </td>
             <td>@gate.loc.GateLevel (@gate.loc.LogiCommander)</td>
             <td>@(gate.travelToNext == 0 ? "Complete!" : $"{gate.travelToNext}")</td>
-        </tr>
+        </RowLink>
     }
     </tbody>
     <div class="row mt-1">

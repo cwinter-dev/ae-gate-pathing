@@ -27,10 +27,10 @@
            @bind-Dropdowns="_dropdowns" NotifyChanged="async () => await Table.Fetch()"></TableUtil>
 <PagedTable @ref="Table" @bind-Page="Page" @bind-Asc="Asc" @bind-SortName="Sort" Class="table-hover table-striped" Headers="@_headers" ItemsPerPage="@ItemsPerPage" FetchNewData="@FetchPagedGates">
     <RowTemplate Context="player">
-        <tr>
+        <RowLink Url="@("https://alpha.astroempires.com/profile.aspx?player=" + player.GameId)">
             <td>@player.Name</td>
             <td>@player.Guild?.Tag</td>
-        </tr>
+        </RowLink>
     </RowTemplate>
 </PagedTable>
 
