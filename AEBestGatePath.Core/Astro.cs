@@ -159,7 +159,7 @@ public readonly partial record struct Astro
         return distance / Speed;
     }
 
-    public decimal Speed => (GateLevel + 1) * (100 - LogiCommander) * .01m;
+    public decimal Speed => this.Speed();
 
     [GeneratedRegex(@"^([A-Z])([0-9])([0-9]):([0-9])([0-9]):([0-9])([0-9]):([0-9])([0-9])$", RegexOptions.Compiled)]
     private static partial Regex LocationRegex();
