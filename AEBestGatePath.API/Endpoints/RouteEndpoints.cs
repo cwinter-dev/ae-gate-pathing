@@ -22,7 +22,7 @@ public static class RouteEndpoints
             {
                 var existingLocation = await db.Gates.FirstOrDefaultAsync(x => x.Location.Server == start.Server &&
                                                                                x.Location.Cluster == start.Cluster &&
-                                                                               x.Location.Galaxy == start.GateLevel &&
+                                                                               x.Location.Galaxy == start.Galaxy &&
                                                                                x.Location.RegionX == start.RegionX &&
                                                                                x.Location.RegionY == start.RegionY &&
                                                                                x.Location.SystemX == start.SystemX &&

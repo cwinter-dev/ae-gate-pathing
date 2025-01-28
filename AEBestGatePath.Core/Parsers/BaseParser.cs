@@ -229,7 +229,7 @@ public static partial class BaseParser
     [GeneratedRegex(@"^Base Owner:?\s+(?:\[(.+)\]\s)?(.+)$", RegexOptions.Compiled)]
     private static partial Regex BaseOwnerRegex();
 
-    [GeneratedRegex(@"^\s+Base Commander: [A-Za-z\s]+\(([A-za-z]+)\s([0-9]{1,2})\)\s+$", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^Base Commander: [A-Za-z\s]+\(([A-za-z]+)\s([0-9]{1,2})\)$", RegexOptions.Compiled)]
     private static partial Regex BaseCommanderRegex();
 
     [GeneratedRegex(@"^Recorded data from ([0-9]+) ([a-z]+)\(s\) ago.$", RegexOptions.Compiled)]
