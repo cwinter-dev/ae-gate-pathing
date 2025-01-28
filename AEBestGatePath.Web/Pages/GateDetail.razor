@@ -116,9 +116,9 @@ else
             StateHasChanged();
             if (updated?.Id != _gate?.Id)
             {
-                _gate = updated;
                 NavManager.NavigateTo("/gate/" + updated!.Id);
             }
+            _gate = updated;
 
             StateHasChanged();
         }
