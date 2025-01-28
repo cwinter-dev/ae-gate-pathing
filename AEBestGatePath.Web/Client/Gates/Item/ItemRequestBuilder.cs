@@ -51,6 +51,7 @@ namespace AEBestGatePath.API.Client.Gates.Item
         /// <returns>A <see cref="global::AEBestGatePath.API.Client.Models.Gate"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+        /// <exception cref="global::AEBestGatePath.API.Client.Models.ApiError">When receiving a 404 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task<global::AEBestGatePath.API.Client.Models.Gate?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -61,7 +62,11 @@ namespace AEBestGatePath.API.Client.Gates.Item
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
-            return await RequestAdapter.SendAsync<global::AEBestGatePath.API.Client.Models.Gate>(requestInfo, global::AEBestGatePath.API.Client.Models.Gate.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
+            {
+                { "404", global::AEBestGatePath.API.Client.Models.ApiError.CreateFromDiscriminatorValue },
+            };
+            return await RequestAdapter.SendAsync<global::AEBestGatePath.API.Client.Models.Gate>(requestInfo, global::AEBestGatePath.API.Client.Models.Gate.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <returns>A <see cref="Stream"/></returns>
         /// <param name="body">The request body</param>

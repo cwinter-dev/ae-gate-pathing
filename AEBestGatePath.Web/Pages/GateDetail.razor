@@ -5,6 +5,7 @@
 @using AEBestGatePath.Web.Shared.Date
 @using AEBestGatePath.Web.Utils
 @using Blazored.Toast.Services
+@using Microsoft.Kiota.Abstractions
 @inject NavigationManager NavManager
 @inject AEBestGatePathClient Client
 @inject IToastService ToastService
@@ -103,6 +104,16 @@ else
     private ElementReference _inputRef;
     private Gate? _gate { get; set; }
 
+    private readonly Gate _default = new()
+    {
+        Id = Guid.Empty,
+        Name = "Unknown",
+        Location = new(),
+        Occupied = false,
+        Player = new() { Name = "Unknown" },
+        LastUpdated = DateTime.MinValue
+    };
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_gate?.Id != Id)
@@ -111,8 +122,18 @@ else
                 _gate = await Client.Gates[Id].GetAsync();
                 InvokeAsync(StateHasChanged);
             }
+            catch (ApiException ex)
+            {
+                _gate = _default;
+                NavManager.NavigateTo("/gate/" + Guid.Empty);
+                Error.ProcessError(ex);
+                // if (ex.ResponseStatusCode == 404)
+                //     NavManager.NavigateTo("404");
+            }
             catch (Exception ex)
             {
+                _gate = _default;
+                NavManager.NavigateTo("/gate/" + Guid.Empty);
                 Error.ProcessError(ex);
             }
         if (!firstRender) return;

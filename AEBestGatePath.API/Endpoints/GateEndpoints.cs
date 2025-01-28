@@ -43,8 +43,9 @@ public static class GateEndpoints
                     .FirstOrDefaultAsync(x => x.Id == id)
                 is { } gate
                 ? Results.Ok(gate)
-                : Results.NotFound())
-            .Produces<Gate>();
+                : Results.NotFound(new ApiError(id + " not found.")))
+            .Produces<Gate>()
+            .Produces<ApiError>(StatusCodes.Status404NotFound);
         
         group.MapGet("/{loc}", async (string loc, AstroEmpiresContext db) =>
         {
