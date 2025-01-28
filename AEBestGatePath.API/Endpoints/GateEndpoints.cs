@@ -77,10 +77,19 @@ public static class GateEndpoints
 
         group.MapPost("/paste", async ([FromBody] string paste, AstroEmpiresContext db) =>
         {
-            var parsed = BaseParser.ParseBasePaste(paste);
+            
+            BaseParser.ParsedBase parsed;
+            try
+            {
+                parsed = BaseParser.ParseBasePaste(paste);
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(new ApiError(ex.Message));
+            }
             var player = db.Players.FirstOrDefault(x => x.Name == parsed.PlayerName);
             if (player == null)
-                return Results.NotFound($"Player {parsed.PlayerName} not found");
+                return Results.NotFound(new ApiError($"Player {parsed.PlayerName} not found"));
             var location = Location.FromAstro(parsed.Astro);
 
             var existingGate = await db.Gates.Include(x => x.Player).FirstOrDefaultAsync(x =>
@@ -121,9 +130,13 @@ public static class GateEndpoints
             existingGate.Location = location;
             await db.SaveChangesAsync();
             
-            return Results.NoContent();
+            return Results.Ok(existingGate);
             
-        }).Produces<Gate?>().RequireAuthorization("admin");
+        }).Produces<Gate?>()
+            .Produces<ApiError>(StatusCodes.Status500InternalServerError)
+            .Produces<ApiError>(StatusCodes.Status404NotFound)
+            .Produces<Gate?>(StatusCodes.Status201Created)
+            .RequireAuthorization("admin");
         
         group.MapPut("/{id:int}", async (int id, Gate inputGate, AstroEmpiresContext db) =>
         {

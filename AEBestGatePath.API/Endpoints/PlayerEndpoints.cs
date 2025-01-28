@@ -70,7 +70,7 @@ public static class PlayerEndpoints
                         }
                         else
                         {
-                            throw new ApplicationException($"Guild tag {player.guildTag} not found");
+                            return Results.InternalServerError(new ApiError($"Guild tag {player.guildTag} not found"));
                         }
                     }
                 }
@@ -96,7 +96,7 @@ public static class PlayerEndpoints
             return Results.NoContent();
             
         }).Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status500InternalServerError)
+            .Produces<ApiError>(StatusCodes.Status500InternalServerError)
             .RequireAuthorization("admin");
 
         group.MapPut("/{id:int}", async (int id, Player inputPlayer, AstroEmpiresContext db) =>

@@ -3,8 +3,10 @@
 @using AEBestGatePath.API.Client.Models
 @using AEBestGatePath.Web.Shared
 @using AEBestGatePath.Web.Shared.Date
+@using Blazored.Toast.Services
 @inject NavigationManager NavManager
 @inject AEBestGatePathClient Client
+@inject IToastService ToastService
 @inject IJSRuntime JS
 
 <div class="container">
@@ -40,7 +42,13 @@ else
             <div class="col-6">
                 <div class="form-group">
                     <label id="Player Name">Player</label>
-                    <a class="form-control no-edit" aria-label="ID" aria-describedby="playerName">@_gate.Player!.Name</a>
+                    <div class="form-control no-edit" aria-label="ID" aria-describedby="playerName">
+                        @if (_gate.Player!.Guild != null)
+                        {
+                            <span>[<a target="_blank" href="https://alpha.astroempires.com/guild.aspx?guild=@_gate.Player.Guild!.GameId">@_gate.Player!.Guild!.Tag</a>]&nbsp;</span>
+                        }
+                        <a target="_blank" href="https://alpha.astroempires.com/profile.aspx?player=@_gate.Player!.GameId">@_gate.Player!.Name</a>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
@@ -63,6 +71,7 @@ else
 </div>
 
 @code {
+    [CascadingParameter] public required Error Error { get; set; }
 
     [Parameter]
     public Guid Id { get; set; }
@@ -100,9 +109,23 @@ else
     [JSInvokable]
     public async Task HandlePaste(string text)
     {
-        await Client.Gates.Paste.PostAsync(text);
-        _gate = await Client.Gates[Id].GetAsync();
-        InvokeAsync(StateHasChanged);
+        try
+        {
+            var updated = await Client.Gates.Paste.PostAsync(text);
+            ToastService.ShowSuccess("Updated Gate!");
+            StateHasChanged();
+            if (updated?.Id != _gate?.Id)
+            {
+                _gate = updated;
+                NavManager.NavigateTo("/gate/" + updated!.Id);
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError("Unable to parse paste: " + ex.Message);
+        }
     }
     
 }

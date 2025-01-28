@@ -35,8 +35,16 @@ public static class RouteEndpoints
                     commanderLevel ?? existingLocation?.Location.LogiCommander ?? 0);
             }
 
-            var journey = new Journey(start, new Astro(destination), jgs, gameVersion);
-            return journey.GetShortestPath();
-        });
+            try
+            {
+                var journey = new Journey(start, new Astro(destination), jgs, gameVersion);
+                return Results.Ok(journey.GetShortestPath());
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(new ApiError(ex.Message));
+            }
+        }).Produces<Stop>()
+        .Produces<ApiError>(StatusCodes.Status500InternalServerError);
     }
 }

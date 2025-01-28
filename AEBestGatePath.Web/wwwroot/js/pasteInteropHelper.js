@@ -3,6 +3,6 @@
     elem.onpaste = (e) => {
         var text = e.clipboardData.getData('text');
 
-        componentInstance.invokeMethod('HandlePaste', text);
+        componentInstance.invokeMethodAsync('HandlePaste', text);
     }
 }
