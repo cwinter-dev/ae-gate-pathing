@@ -43,7 +43,14 @@ builder.Services
 
 
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddAuthorizationCore();
+builder.Services.AddAuthorizationCore(x =>
+{
+    x.AddPolicy("admin", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("Role", "admin");
+    });
+});
 
 
 builder.Services.AddScoped<AEBestGatePathClient>();

@@ -12,4 +12,12 @@ public static class AstroUtils
     {
         return astro.FormatLocation() + $" - {astro.GateLevel}:{astro.LogiCommander}";
     }
+    public static string FormatLocation(this Location astro)
+    {
+        return $"{astro.Server}{astro.Cluster}{astro.Galaxy}:{astro.RegionX}{astro.RegionY}:{astro.SystemX}{astro.SystemY}:{astro.Ring}{astro.RingPosition}";
+    }
+    public static string Format(this Location astro)
+    {
+        return astro.FormatLocation() + $" - {astro.GateLevel}:{astro.LogiCommander}";
+    }
 }

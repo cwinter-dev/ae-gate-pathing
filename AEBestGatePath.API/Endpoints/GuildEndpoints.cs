@@ -41,7 +41,7 @@ public static class GuildEndpoints
             return Results.NoContent();
         }).RequireAuthorization("admin");
 
-        group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
+        group.MapDelete("/{id:Guid}", async (Guid id, AstroEmpiresContext db) =>
         {
             if (await db.Guilds.FindAsync(id) is not { } guild) return Results.NotFound();
             db.Guilds.Remove(guild);

@@ -3,6 +3,7 @@
 @using AEBestGatePath.API.Client.Models
 @using AEBestGatePath.Web.Shared
 @using AEBestGatePath.Web.Shared.Date
+@using AEBestGatePath.Web.Utils
 @using Blazored.Toast.Services
 @inject NavigationManager NavManager
 @inject AEBestGatePathClient Client
@@ -19,6 +20,9 @@ else
 {
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="my-5">@_gate.Name <small class="text-danger">@(_gate.Occupied!.Value ? "(Occupied)" : "")</small></h1>
+            <AuthorizeView Policy="admin">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-x-circle-fill"></i></button>
+            </AuthorizeView>
         </div>
         <div class="row">
             <div class="col-6">
@@ -59,11 +63,29 @@ else
             </div>
         </div>
 }
-<AuthorizeView>
+<AuthorizeView Policy="admin">
     <Authorized>
         <div class="row mt-5">
             <div class="col">
                 <textarea class="form-control" @ref="_inputRef" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="modal" id="confirmDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm</h5>
+                        <a class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you really want to delete the gate @_gate?.Name at @_gate?.Location?.FormatLocation()?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</a>
+                        <a class="btn btn-danger" data-bs-dismiss="modal" @onclick="Delete">Delete</a>
+                    </div>
+                </div>
             </div>
         </div>
     </Authorized>
@@ -105,6 +127,13 @@ else
 
         // else
         //     NavManager.NavigateTo("404");
+    }
+
+    private async Task Delete()
+    {
+        await Client.Gates[Id].DeleteAsync();
+        NavManager.NavigateTo("/gate");
+        StateHasChanged();
     }
     
 

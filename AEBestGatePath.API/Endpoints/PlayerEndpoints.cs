@@ -113,7 +113,7 @@ public static class PlayerEndpoints
             return Results.NoContent();
         }).RequireAuthorization("admin");
 
-        group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
+        group.MapDelete("/{id:Guid}", async (Guid id, AstroEmpiresContext db) =>
         {
             if (await db.Players.FindAsync(id) is not { } player) return Results.NotFound();
             db.Players.Remove(player);

@@ -155,7 +155,7 @@ public static class GateEndpoints
             return Results.NoContent();
         }).RequireAuthorization("admin");
 
-        group.MapDelete("/{id:int}", async (int id, AstroEmpiresContext db) =>
+        group.MapDelete("/{id:Guid}", async (Guid id, AstroEmpiresContext db) =>
         {
             if (await db.Gates.FindAsync(id) is not { } gate) return Results.NotFound();
             db.Gates.Remove(gate);

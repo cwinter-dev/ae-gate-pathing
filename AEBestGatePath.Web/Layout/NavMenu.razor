@@ -11,7 +11,7 @@
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <NavLink class="btn rounded position-relative" Match="NavLinkMatch.Prefix" href="/gate">Gates&nbsp;
-                <AuthorizeView>
+                <AuthorizeView Policy="admin">
                     <Authorized>
                         @if (_outdatedAstros > 0)
                         {
