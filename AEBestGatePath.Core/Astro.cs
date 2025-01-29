@@ -51,6 +51,7 @@ public readonly partial record struct Astro
 
     public int LocationX => RegionX * 10 + SystemX;
     public int LocationY => RegionY * 10 + SystemY;
+    public int GalaxyPosition => Cluster * 10 + Galaxy;
 
     public int RegionX { get; }
     public int RegionY { get; }
@@ -157,6 +158,17 @@ public readonly partial record struct Astro
         }
 
         return distance / Speed;
+    }
+
+    public bool Between(Astro a, Astro b, bool inclusive = true)
+    {
+        if (Cluster != a.Cluster && Cluster != b.Cluster)
+            return false;
+        var aVal = a.Cluster * 10 + a.Galaxy;
+        var bVal = b.Cluster * 10 + b.Galaxy;
+        if (inclusive)
+            return Math.Min(aVal, bVal) <= Cluster * 10 + Galaxy && Cluster * 10 + Galaxy <= Math.Max(aVal, bVal);
+        return Math.Min(aVal, bVal) < Cluster * 10 + Galaxy && Cluster * 10 + Galaxy < Math.Max(aVal, bVal);
     }
 
     public decimal Speed => this.Speed();

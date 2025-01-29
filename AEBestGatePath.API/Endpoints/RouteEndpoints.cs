@@ -75,6 +75,7 @@ public static class RouteEndpoints
 
                 try
                 {
+                    Console.WriteLine($"Running with {jgs.Count} gates");
                     var journey = new Journey(start, dest, jgs, gameVersion);
                     return Results.Ok(journey.GetShortestPath());
                 }
