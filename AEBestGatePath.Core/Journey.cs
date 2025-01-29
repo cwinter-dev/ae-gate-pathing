@@ -19,7 +19,6 @@ public class Journey
     {
         var n2 = true;
         var newPaths = new Dictionary<Stop, decimal>();
-        // TODO: shortcut destination gate as highest jg in path
         var head = new Stop(Source, GameVersion);
         var foot = new Stop(Destination, GameVersion);
 
@@ -50,6 +49,7 @@ public class Journey
             var highestSpeed = candidateJgs.Max(x => x.Speed);
             var stop = _jgs.Where(beforeFoot)
                 .Where(afterHead)
+                .Where(x => x.Speed > head.Node.Speed)
                 .Where(x => x.Speed == highestSpeed)
                 //Furthest distance
                 .OrderByDescending(x => x.DistanceTo(foot.Node))
